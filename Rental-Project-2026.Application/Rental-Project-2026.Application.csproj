@@ -7,4 +7,20 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+    <ItemGroup>
+	    <Folder Include="UseCases\Branches\Queries\" />
+    </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rental-Project-2026.Domain\Rental-Project-2026.Domain.csproj" />
+  </ItemGroup>
+
+  
+
+
+
 </Project>

@@ -7,4 +7,18 @@
     <RootNamespace>Rental_Project_2026.Web</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Rental-Project-2026.Application\Rental-Project-2026.Application.csproj" />
+    <ProjectReference Include="..\Rental-Project-2026.Domain\Rental-Project-2026.Domain.csproj" />
+    <ProjectReference Include="..\Rental-Project-2026.Persistence\Rental-Project-2026.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

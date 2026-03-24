@@ -1,1 +1,15 @@
-<Solution />
+<Solution>
+  <Folder Name="/Core/">
+    <Project Path="Rental-Project-2026.Application/Rental-Project-2026.Application.csproj" />
+    <Project Path="Rental-Project-2026.Domain/Rental-Project-2026.Domain.csproj" />
+  </Folder>
+  <Folder Name="/Infrastructure/">
+    <Project Path="Rental-Project-2026.Persistence/Rental-Project-2026.Persistence.csproj" />
+  </Folder>
+  <Folder Name="/Presenters/">
+    <Project Path="Rental-Project-2026.Web/Rental-Project-2026.Web.csproj" />
+  </Folder>
+  <Folder Name="/Tests/">
+    <Project Path="Rental-Project-2026.Test/Rental-Project-2026.Test.csproj" />
+  </Folder>
+</Solution>
