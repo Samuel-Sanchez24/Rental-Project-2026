@@ -3,15 +3,11 @@
 public class Branch
 {
     public Guid Id { get; set; }
-    public string? Name { get; private set; }
-    public string? City { get; private set; }
-    public string? Address { get; private set; }
-    public string? Phone { get; private set; }
+    public string Name { get; private set; }
+    public string City { get; private set; }
+    public string Address { get; private set; }
+    public string Phone { get; private set; }
     public BranchStatus Status { get; private set; }
-
-    private Branch()
-    {
-    }
 
     public Branch(string name, string city, string address, string phone)
     {

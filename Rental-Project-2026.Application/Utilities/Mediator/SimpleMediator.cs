@@ -42,7 +42,12 @@ namespace Rental_Project_2026.Application.Utilities.Mediator
                 throw new MediatorException($"No se encontró un handler para {request.GetType().Name}");
             }
 
-            MethodInfo method = useCaseType.GetMethod("Handle")!;
+            MethodInfo? method = useCaseType.GetMethod("Handle")
+                             ?? useCaseType.GetMethod("Handler");  
+            if (method is null)
+            {
+                throw new MediatorException($"No se encontró un método Handle o Handler para {request.GetType().Name}");
+            }
 
             await (Task)method.Invoke(useCase, new object[] { request })!;
         }

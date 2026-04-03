@@ -4,7 +4,7 @@ using System.Text;
 using Rental_Project_2026.Application.Contracts.Repositories;
 using static System.Collections.Specialized.BitVector32;
 
-namespace Rental_Project_2026.Application.UseCases.Branches.Commands
+namespace Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch
 {
     public class CreateBranchUseCase : IRequestHandler<CreateBranchCommand, Guid>
     {
@@ -16,8 +16,6 @@ namespace Rental_Project_2026.Application.UseCases.Branches.Commands
             _repository = repository;
             _unitOfWork = unitOfWork;
         }
-
-
 
         public async Task<Guid> Handle(CreateBranchCommand command)
         {

@@ -1,4 +1,4 @@
-﻿
+﻿@model IEnumerable<Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList.BranchListItemDTO>
 @{
     ViewData["Title"] = "Sucursales";
 }
@@ -27,8 +27,64 @@
         </div>
 
         <div class="card-body mt-3">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sucursal</th>
+                        <th>Activa</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@(item.Status == BranchStatus.Active ? "Si" : "No")</td>
+                            <td>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: contents">
+                                    
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+
+            </table>
         </div>
 
     </div>
 
 </section>
+
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+            $('.btnDelete').click(function(event){
+
+                event.preventDefault();
+
+                Swal.fire({
+                    icon = "question",
+                    title = "¿Desea eliminar la sucursal?",
+                    Text = "No podra revertir la accion",
+                    showCancelButton = true 
+                }).then((result) => {
+
+                    if (result.isConfirmed){
+
+                        const form = $(this).closest('form');
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}
