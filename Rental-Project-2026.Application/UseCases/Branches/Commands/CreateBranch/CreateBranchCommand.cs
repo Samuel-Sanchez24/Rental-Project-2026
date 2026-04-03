@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Rental_Project_2026.Application.UseCases.Branches.Commands
+namespace Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch
 {
     public class CreateBranchCommand : IRequest<Guid>
     {
