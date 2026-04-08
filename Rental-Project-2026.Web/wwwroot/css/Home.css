@@ -1,0 +1,156 @@
+﻿.hero-movifleet {
+    background: #06132a;
+    border-radius: 20px;
+    padding: 70px 60px;
+    margin: 20px;
+    overflow: hidden;
+    position: relative;
+    min-height: 460px;
+}
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.hero-text {
+    width: 58%;
+    z-index: 2; 
+}
+
+.hero-text h2 {
+    color: #f1f5f9;
+    font-size: 2.2rem;
+    margin-bottom: 12px;
+}
+
+.hero-text h1 {
+    font-size: 4.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 18px;
+    line-height: 1.05;
+}
+
+.hero-text h1 span {
+    color: #3882F6;
+}
+
+.hero-text p {
+    color: #cbd5e1;
+    font-size: 1.25rem;
+    margin-bottom: 0;
+}
+
+.hero-text p span {
+    color: #3882F6;
+}
+
+.hero-image {
+    width: 48%;
+    position: relative;
+    overflow: visible;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.hero-image img {
+    position: relative;
+    z-index: 1;
+    width: 170%;
+    max-width: none;
+    transform: translateX(15%) scale(1.2);
+    opacity: 0.95;
+    filter: brightness(1.1) contrast(1.1) drop-shadow(0 0 60px rgba(56,130,246,0.35));
+}
+
+
+body {
+    background: #020817;
+    color: #e5e7eb;
+}
+
+.container,
+.container-fluid,
+main {
+    background-color: transparent !important;
+}
+
+.bg-light {
+    background-color: #020817 !important;
+}
+
+/* Nuevos cambios */
+
+/* Fondo general */
+body,
+html {
+    background: #020817 !important;
+}
+
+/* Header */
+#header.header {
+    background: #020817 !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+/* Sidebar */
+#sidebar.sidebar {
+    background: #020817 !important;
+    box-shadow: none !important;
+    border-right: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+/* Área principal */
+#main,
+.main {
+    background: #020817 !important;
+}
+
+/* Links del sidebar */
+#sidebar .sidebar-nav .nav-link {
+    background: rgba(255,255,255,0.03) !important;
+    color: #dbe4f0 !important;
+    border-radius: 10px !important;
+}
+
+#sidebar .sidebar-nav .nav-link i,
+#sidebar .sidebar-nav .nav-link span {
+    color: #dbe4f0 !important;
+}
+
+#sidebar .sidebar-nav .nav-link:hover,
+#sidebar .sidebar-nav .nav-link.active {
+    background: rgba(56,130,246,0.15) !important;
+    color: #ffffff !important;
+}
+
+/* Barra de búsqueda */
+#header .search-form input {
+    background: #0b1220 !important;
+    color: #e5e7eb !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+}
+
+#header .search-form button {
+    background: transparent !important;
+    color: #3882F6 !important;
+    border: none !important;
+}
+
+/* Perfil usuario */
+#header .nav-profile span {
+    color: #e5e7eb !important;
+}
+
+/* Footer */
+.footer {
+    background: #020817 !important;
+    color: #94a3b8 !important;
+    border-top: 1px solid rgba(255,255,255,0.05) !important;
+}
+
+/*Edicion de imagen de fondo*/

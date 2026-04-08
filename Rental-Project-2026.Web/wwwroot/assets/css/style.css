@@ -685,7 +685,7 @@ h6 {
   font-size: 15px;
   font-weight: 600;
   color: #4154f1;
-  transition: 0.3;
+  transition: 0.3s;
   background: #f6f9ff;
   padding: 10px 15px;
   border-radius: 4px;
@@ -736,7 +736,7 @@ h6 {
   font-size: 14px;
   font-weight: 600;
   color: #012970;
-  transition: 0.3;
+  transition: 0.3s;
   padding: 10px 0 10px 40px;
   transition: 0.3s;
 }
@@ -1230,4 +1230,29 @@ h6 {
   text-align: center;
   font-size: 13px;
   color: #012970;
+}
+/*--------------------------------------------------------------
+Cambios
+--------------------------------------------------------------*/
+
+.header {
+    height: 90px !important;
+    padding: 0 20px;
+}
+
+.logo {
+    width: 340px;
+    display: flex;
+    align-items: center;
+}
+
+    .logo img {
+        max-height: none !important;
+    }
+
+.main-logo {
+    height: 72px !important;
+    width: auto !important;
+    display: block;
+    object-fit: contain;
 }
