@@ -1,4 +1,5 @@
 ﻿using System;
+namespace Rental_Project_2026.Domain.Exceptions;
 
 public class BusinessRulesException : Exception
 {

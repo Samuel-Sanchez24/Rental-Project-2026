@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Rental_Project_2026.Application.UseCases.Branches.Commands.ActiveBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch;
+using Rental_Project_2026.Application.UseCases.Branches.Commands.DeactivateBranch;
+using Rental_Project_2026.Application.UseCases.Branches.Commands.DeleteBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.UpdateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchById;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList;
@@ -17,7 +20,9 @@ namespace Rental_Project_2026.Application
             services.AddScoped<IRequestHandler<GetBranchesListQuery, IEnumerable<BranchListItemDTO>>, GetBranchesListUseCase>();
             services.AddScoped<IRequestHandler<UpdateBranchCommand>, UpdateBranchUseCase>();
             services.AddScoped<IRequestHandler<GetBranchByIdQuery, BranchDetailDTO>, GetBranchByIdUseCase>();
-
+            services.AddScoped<IRequestHandler<DeleteBranchCommand>, DeleteBranchUseCase>();
+            services.AddScoped<IRequestHandler<ActivateBranchCommand>, ActivateBranchUseCase>();
+            services.AddScoped<IRequestHandler<DeactivateBranchCommand>, DeactivateBranchUseCase>();
 
             return services;
         }

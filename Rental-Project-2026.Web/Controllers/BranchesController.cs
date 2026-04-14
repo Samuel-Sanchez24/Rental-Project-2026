@@ -1,6 +1,7 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch;
+using Rental_Project_2026.Application.UseCases.Branches.Commands.DeleteBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.UpdateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchById;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList;
@@ -132,7 +133,7 @@ namespace Rental_Project_2026.Web.Controllers
         {
             try
             {
-                await _mediator.Send(new Application.UseCases.Branches.Commands.DeleteBranch.DeleteBranchCommand { Id = Id });
+                await _mediator.Send(new DeleteBranchCommand { Id = Id });
                 _notyfService.Success("Rama eliminada exitosamente");
             }
             catch (Exception ex)

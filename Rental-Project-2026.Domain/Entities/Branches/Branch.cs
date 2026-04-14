@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Rental_Project_2026.Domain.Exceptions;
+using System;
+
+namespace Rental_Project_2026.Domain.Entities.Branches;
 
 public class Branch
 {
