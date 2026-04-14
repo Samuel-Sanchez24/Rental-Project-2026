@@ -126,5 +126,22 @@ namespace Rental_Project_2026.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [HttpPost]
+
+        public async Task<IActionResult> Delete([FromRoute] Guid Id) 
+        {
+            try
+            {
+                await _mediator.Send(new Application.UseCases.Branches.Commands.DeleteBranch.DeleteBranchCommand { Id = Id });
+                _notyfService.Success("Rama eliminada exitosamente");
+            }
+            catch (Exception ex)
+            {
+
+               _notyfService.Error($"Error al eliminar la rama: {ex.Message}");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
     }
 }
