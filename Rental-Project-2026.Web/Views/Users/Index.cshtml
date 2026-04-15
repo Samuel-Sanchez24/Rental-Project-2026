@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList.UserListItemDTO>
+@using Rental_Project_2026.Domain.Entities
+@{
+    ViewData["Title"] = "Usuarios";
+}
+<link rel="stylesheet" href="~/css/theme-dark.css" />
+
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Inicio</a></li>
+            <li class="breadcrumb-item active">Usuarios</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section users-page">
+    <div class="card users-card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mt-3 mb-3">
+                <h5 class="card-title">Lista de usuarios</h5>
+                <a asp-action="Create" class="btn btn-primary">Crear usuario</a>
+            </div>
+
+            <table class="table table-bordered users-table">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Correo</th>
+                        <th>Teléfono</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.Email</td>
+                            <td>@item.Phone</td>
+                            <td>@item.Role</td>
+                            <td>@item.Status</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-info">
+                                    Ver
+                                </a>
+
+                                <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-warning">
+                                    Editar
+                                </a>
+
+                                <form asp-action="Delete" asp-route-id="@item.id" method="post" style="display:inline;">
+                                    @if (item.Status == UserStatus.Active)
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-danger btnDelete">
+                                            Desactivar
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" class="btn btn-sm btn-success btnActivate">
+                                            Activar
+                                        </button>
+                                    }
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.btnDelete').click(function (event) {
+                event.preventDefault();
+
+                const form = $(this).closest('form');
+
+                Swal.fire({
+                    icon: "question",
+                    title: "¿Desea desactivar este usuario?",
+                    text: "El usuario quedará inactivo.",
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, desactivar",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}

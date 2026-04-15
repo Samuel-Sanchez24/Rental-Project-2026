@@ -1,6 +1,7 @@
-﻿@model EditBranchDTO
+﻿@using Rental_Project_2026.Web.DTOs.Users
+@model EditUserDTO
 @{
-    ViewData["Title"] = "Editar Sucursal";
+    ViewData["Title"] = "Editar Usuario"; 
 }
 <link rel="stylesheet" href="~/css/theme-dark.css" />
 
@@ -9,7 +10,7 @@
     <nav>
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Inicio</a></li>
-            <li class="breadcrumb-item"><a asp-action="Index">Sucursales</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index">Usuarios</a></li>
             <li class="breadcrumb-item active">@ViewData["Title"]</li>
         </ol>
     </nav>
@@ -18,7 +19,7 @@
 <section class="branch-page">
     <div class="card">
         <div class="card-header">
-            <h3 class="m-0 font-weight-bold text-primary">Editar Sucursal</h3>
+            <h3 class="m-0 font-weight-bold text-primary">Editar Usuario</h3>
         </div>
 
         <div class="card-body mt-3">
@@ -33,15 +34,9 @@
                 </div>
 
                 <div class="col-md-12">
-                    <label asp-for="City" class="form-label"></label>
-                    <input asp-for="City" class="form-control" />
-                    <span asp-validation-for="City" class="text-danger"></span>
-                </div>
-
-                <div class="col-md-12">
-                    <label asp-for="Address" class="form-label"></label>
-                    <input asp-for="Address" class="form-control" />
-                    <span asp-validation-for="Address" class="text-danger"></span>
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
 
                 <div class="col-md-12">
@@ -50,9 +45,16 @@
                     <span asp-validation-for="Phone" class="text-danger"></span>
                 </div>
 
+                <div class="col-md-6">
+                    <label asp-for="Role" class="form-label"></label>
+                    <select asp-for="Role" class="form-select" asp-items="Html.GetEnumSelectList<UserRole>()">
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
                 <div class="col-md-12">
                     <label asp-for="Status" class="form-label"></label>
-                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<BranchStatus>()">
+                    <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<UserStatus>()">
                         <option value="">Seleccione un estado</option>
                     </select>
                     <span asp-validation-for="Status" class="text-danger"></span>

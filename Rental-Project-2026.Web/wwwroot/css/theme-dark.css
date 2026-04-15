@@ -230,8 +230,6 @@ h1, h2, h3, h4 {
 
 /* ===== FORM FLOATING DARK FIX ===== */
 
-/* ===== FORM FLOATING DARK FIX ===== */
-
 .form-floating {
     position: relative;
 }
@@ -277,4 +275,30 @@ h1, h2, h3, h4 {
     color: #e5e7eb !important;
     border-color: #2563eb !important;
     box-shadow: 0 0 0 0.15rem rgba(37,99,235,.15) !important;
+}
+
+/* USERS PAGE DARK MODE */
+
+body section.users-page .users-card {
+    background: #07162f !important;
+    border: 1px solid rgba(255,255,255,0.05) !important;
+    border-radius: 20px !important;
+    box-shadow: none !important;
+    color: #e5e7eb !important;
+}
+
+    body section.users-page .users-card .card-header {
+        background: transparent !important;
+        border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+    }
+
+body section.users-page .users-title {
+    color: #e5e7eb !important;
+}
+
+body section.users-page .users-table th,
+body section.users-page .users-table td {
+    background: transparent !important;
+    color: #e5e7eb !important;
+    border-color: rgba(255,255,255,0.08) !important;
 }

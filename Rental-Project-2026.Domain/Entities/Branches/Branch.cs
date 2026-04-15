@@ -16,7 +16,7 @@ public class Branch
     {
         ApplyBusinessRules(name, city, address, phone);
 
-        Id = Guid.CreateVersion7();
+        Id = Guid.CreateVersion7(); 
         Name = name;
         City = city;
         Address = address;

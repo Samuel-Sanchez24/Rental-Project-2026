@@ -6,7 +6,7 @@ using Rental_Project_2026.Application.UseCases.Branches.Commands.UpdateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchById;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList;
 using Rental_Project_2026.Web.DTOs.Branches;
-
+    
 namespace Rental_Project_2026.Web.Controllers
 {
     public class BranchesController : Controller
