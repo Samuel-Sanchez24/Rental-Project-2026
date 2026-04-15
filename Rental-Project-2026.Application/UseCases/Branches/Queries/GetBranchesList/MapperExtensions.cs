@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rental_Project_2026.Domain.Entities.Branches;
+using System;
 using System.Collections.Generic;
 using System.Text;
 

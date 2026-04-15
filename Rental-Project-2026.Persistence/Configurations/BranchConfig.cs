@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Rental_Project_2026.Domain.Entities.Branches;
 
 namespace Rental_Project_2026.Persistence.Configurations
 {

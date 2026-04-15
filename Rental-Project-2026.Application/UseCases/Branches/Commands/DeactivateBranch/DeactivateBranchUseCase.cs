@@ -32,7 +32,7 @@ namespace Rental_Project_2026.Application.UseCases.Branches.Commands.DeactivateB
             try
             {
                 branch.Deactivate();
-                await _repository.UpdateAsync(branch: branch);
+                await _repository.UpdateAsync(branch);
                 await _unitOfWork.CommitAsync();
             }
             catch

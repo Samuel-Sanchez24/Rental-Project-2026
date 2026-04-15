@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Rental_Project_2026.Application.Contracts.Repositories;
 using Rental_Project_2026.Application.Utilities.Mediator;
+using Rental_Project_2026.Domain.Entities.Branches;
 
 namespace Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList
 {

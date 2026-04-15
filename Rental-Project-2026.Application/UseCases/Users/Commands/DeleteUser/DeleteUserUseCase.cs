@@ -1,4 +1,5 @@
 ﻿using Rental_Project_2026.Application.Contracts.Repositories;
+using Rental_Project_2026.Domain.Exceptions;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser
 {
