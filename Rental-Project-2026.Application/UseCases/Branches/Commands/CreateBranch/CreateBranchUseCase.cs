@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Rental_Project_2026.Application.Contracts.Repositories;
+using Rental_Project_2026.Domain.Entities.Branches;
 using static System.Collections.Specialized.BitVector32;
 
 namespace Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch

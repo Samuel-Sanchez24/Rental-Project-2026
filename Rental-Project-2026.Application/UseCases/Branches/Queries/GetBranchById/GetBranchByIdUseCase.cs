@@ -1,4 +1,6 @@
 ﻿using Rental_Project_2026.Application.Contracts.Repositories;
+using Rental_Project_2026.Domain.Entities.Branches;
+using Rental_Project_2026.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Text;

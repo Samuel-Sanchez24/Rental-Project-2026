@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
+using Rental_Project_2026.Domain.Entities;
+using Rental_Project_2026.Domain.Entities.Branches;
 using static System.Collections.Specialized.BitVector32;
 
 namespace Rental_Project_2026.Persistence
@@ -13,6 +15,7 @@ namespace Rental_Project_2026.Persistence
             
         }
         public DbSet<Branch> Branches { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
