@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList.BranchListItemDTO>
+@using Rental_Project_2026.Domain.Entities.Branches;
+
 @{
     ViewData["Title"] = "Sucursales";
 }
@@ -41,9 +43,48 @@
                     {
                         <tr>
                             <td>@item.Name</td>
-                            <td>@(item.Status == BranchStatus.Active ? "Si" : "No")</td>
                             <td>
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-success">
+
+                                @if(item.Status == BranchStatus.Active)
+                                {
+                                    <span class="text-success"><i class="bi bi-check2-circle"></i> </span>
+                                }
+                                else
+                                {
+                                    <span class="text-success"><i class="bi bi-ban"></i> </span>
+
+                                }
+
+                            </td>
+                            <td>
+
+                                @if (item.Status is BranchStatus.Active)
+                                {
+                                    <form method="post" asp-action="Deactivate" asp-route-id="@item.Id" style="display: contents;">
+                                        <button type="submit" 
+                                                class="btn btn-success"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement ="top"
+                                                title = "Desactivar Sucursal">
+                                            <i class="bi bi-toggle-on"></i>
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-action="Activate" asp-route-id="@item.Id" style="display: contents;">
+                                        <button type="submit"
+                                                class="btn btn-secondary"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement ="top"
+                                                title = "Activar Sucursal">
+                                            <i class="bi bi-toggle-off"></i>
+                                        </button>
+                                    </form>
+                                }
+
+
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
                                     <i class="bi bi-pencil-fill"></i>
                                 </a>
 

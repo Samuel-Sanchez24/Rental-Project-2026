@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Rental_Project_2026.Application.Exceptions;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
-using System.Text;
 
 namespace Rental_Project_2026.Application.Utilities.Mediator
 {
@@ -16,6 +17,8 @@ namespace Rental_Project_2026.Application.Utilities.Mediator
 
         public async Task<TResponse> Send<TResponse>(IRequest<TResponse> request)
         {
+
+            await ValidateRequestAsync(request).ConfigureAwait(false);
 
             Type useCaseType = typeof(IRequestHandler<,>).MakeGenericType(request.GetType(), typeof(TResponse));
 
@@ -43,13 +46,49 @@ namespace Rental_Project_2026.Application.Utilities.Mediator
             }
 
             MethodInfo? method = useCaseType.GetMethod("Handle")
-                             ?? useCaseType.GetMethod("Handler");  
+                             ?? useCaseType.GetMethod("Handler");
             if (method is null)
             {
                 throw new MediatorException($"No se encontró un método Handle o Handler para {request.GetType().Name}");
             }
 
             await (Task)method.Invoke(useCase, new object[] { request })!;
+        }
+
+        private async Task ValidateRequestAsync(object request)
+        {
+            Type RequestType = request.GetType();
+            Type ValidatorInterface = typeof(IValidator<>).MakeGenericType(RequestType);
+            object? validator = _serviceProvider.GetService(ValidatorInterface);
+
+            if (validator is null)
+            {
+                return;
+            }
+
+            MethodInfo? validateMethod = ValidatorInterface.GetMethod("ValidateAsync", new[] { RequestType, typeof(CancellationToken) });
+            if (validateMethod is null)
+            {
+                return;
+            }
+            object? validationResult = validateMethod.Invoke(validator, new object[] { request, CancellationToken.None });
+
+            if (validationResult is not Task task)
+            {
+                return;
+            }
+            await task.ConfigureAwait(false);
+
+            PropertyInfo? resultProperty = task.GetType().GetProperty("Result");
+            if (resultProperty?.GetValue(task) is not FluentValidation.Results.ValidationResult result)
+            {
+                return;
+            }
+
+            if (!result.IsValid)
+            {
+                throw new CustomValidationException(result);
+            }
         }
     }
 }

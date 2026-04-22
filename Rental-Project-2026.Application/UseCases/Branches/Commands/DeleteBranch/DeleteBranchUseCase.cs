@@ -24,7 +24,7 @@ namespace Rental_Project_2026.Application.UseCases.Branches.Commands.DeleteBranc
 
             if (branch is null) 
             {
-                throw new BusinessRulesException ($"No existe Rama con id'{command.Id}'");
+                throw new BusinessRulesException ($"No existe sucursal con id'{command.Id}'");
             }
 
             // TODO: Validar que no tenga articulos asociados

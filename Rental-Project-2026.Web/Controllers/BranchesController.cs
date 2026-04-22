@@ -1,6 +1,8 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Rental_Project_2026.Application.UseCases.Branches.Commands.ActiveBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch;
+using Rental_Project_2026.Application.UseCases.Branches.Commands.DeactivateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.DeleteBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.UpdateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchById;
@@ -128,21 +130,53 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpPost]
-
         public async Task<IActionResult> Delete([FromRoute] Guid Id) 
         {
             try
             {
                 await _mediator.Send(new DeleteBranchCommand { Id = Id });
-                _notyfService.Success("Rama eliminada exitosamente");
+                _notyfService.Success("Sucursal eliminada exitosamente");
             }
             catch (Exception ex)
             {
 
-               _notyfService.Error($"Error al eliminar la rama: {ex.Message}");
+               _notyfService.Error($"Error al eliminar la sucursal: {ex.Message}");
             }
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Activate([FromRoute] Guid Id)
+        {
+            try
+            {
+                await _mediator.Send(new ActivateBranchCommand { Id = Id });
+                _notyfService.Success("Sucursal activada exitosamente");
+            }
+            catch (Exception ex)
+            {
+
+                _notyfService.Error($"Error al activar la sucursal: {ex.Message}");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Deactivate([FromRoute] Guid Id)
+        {
+            try
+            {
+                await _mediator.Send(new DeactivateBranchCommand { Id = Id });
+                _notyfService.Success("Sucursal desactivada exitosamente");
+            }
+            catch (Exception ex)
+            {
+
+                _notyfService.Error($"Error al desactivar la sucursal: {ex.Message}");
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
 
     }
 }
