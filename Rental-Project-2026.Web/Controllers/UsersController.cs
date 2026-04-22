@@ -5,6 +5,7 @@ using Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList;
 using Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById;
 using Rental_Project_2026.Web.DTOs.Users;
 using Rental_Project_2026.Application.UseCases.Users.Commands.Update_User;
+using Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStatus;
 
 namespace Rental_Project_2026.Web.Controllers
 {
@@ -123,5 +124,20 @@ namespace Rental_Project_2026.Web.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleStatus(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new ToggleUserStatusCommand { id = id });
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }
+    

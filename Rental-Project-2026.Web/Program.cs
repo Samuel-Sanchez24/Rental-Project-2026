@@ -2,11 +2,18 @@ using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Rental_Project_2026.Application;
 using Rental_Project_2026.Persistence;
+using Rental_Project_2026.Web.Middlewares;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 builder.Services.AddNotyf(configure =>
 {
@@ -30,6 +37,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseSession();
+
 app.UseAuthorization();
 
 app.MapStaticAssets();
@@ -40,4 +49,5 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.UseNotyf();
+app.UseExeptionHandlerMiddleware();
 app.Run();

@@ -12,6 +12,8 @@ using Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById;
 using Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser;
 using Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser;
 using Rental_Project_2026.Application.UseCases.Users.Commands.Update_User;
+using Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStatus;
+using FluentValidation;
 
 namespace Rental_Project_2026.Application
 {
@@ -21,7 +23,7 @@ namespace Rental_Project_2026.Application
         {
             services.AddTransient<IMediator, SimpleMediator>();
 
-            // Branches Services
+            // Branches Services UseCases
             services.AddScoped<IRequestHandler<CreateBranchCommand, Guid>, CreateBranchUseCase>();
             services.AddScoped<IRequestHandler<GetBranchesListQuery, IEnumerable<BranchListItemDTO>>, GetBranchesListUseCase>();
             services.AddScoped<IRequestHandler<UpdateBranchCommand>, UpdateBranchUseCase>();
@@ -29,14 +31,16 @@ namespace Rental_Project_2026.Application
             services.AddScoped<IRequestHandler<DeleteBranchCommand>, DeleteBranchUseCase>();
             services.AddScoped<IRequestHandler<ActivateBranchCommand>, ActivateBranchUseCase>();
             services.AddScoped<IRequestHandler<DeactivateBranchCommand>, DeactivateBranchUseCase>();
+            // Branches Validators
+            services.AddValidatorsFromAssemblyContaining<CreateBranchCommandValidator>();
 
-
-            //Users Services
+            //Users Services UseCases
             services.AddScoped<IRequestHandler<GetUserByIdQuery, UserDetailDTO>, GetUserByIdUseCase>();
             services.AddScoped<IRequestHandler<CreateUserCommand, Guid>, CreateUserUseCase>();
             services.AddScoped<IRequestHandler<DeleteUserCommand>, DeleteUserUseCase>();
             services.AddScoped<IRequestHandler<GetUsersListQuery, IEnumerable<UserListItemDTO>>, GetUsersListUseCase>();
             services.AddScoped<IRequestHandler<UpdateUserCommand>, UpdateUserUseCase>();
+            services.AddScoped<IRequestHandler<ToggleUserStatusCommand>, ToggleUserStatusUseCase>();
 
 
             return services;
