@@ -1,9 +1,10 @@
-﻿using Rental_Project_2026.Domain.Entities;
+using Rental_Project_2026.Application.Contracts.Pagination;
 using Rental_Project_2026.Application.Contracts.Repositories;
+using Rental_Project_2026.Domain.Entities;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList
 {
-    internal class GetUsersListUseCase : IRequestHandler<GetUsersListQuery, IEnumerable<UserListItemDTO>>
+    internal class GetUsersListUseCase : IRequestHandler<GetUsersListQuery, PaginationResponse<UserListItemDTO>>
     {
         private readonly IUsersRepository _userRepository;
 
@@ -12,13 +13,23 @@ namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList
             _userRepository = userRepository;
         }
 
-        public async Task<IEnumerable<UserListItemDTO>> Handle(GetUsersListQuery request)
+        public async Task<PaginationResponse<UserListItemDTO>> Handle(GetUsersListQuery query)
         {
-            IEnumerable<User> users = await _userRepository.GetListAsync();
+            PaginationResponse<User> pagedUsers = await _userRepository.GetPagedList(
+                query.Pagination,
+                query.NameFilter,
+                query.EmailFilter,
+                query.RoleFilter,
+                query.StatusFilter);
 
-            List<UserListItemDTO> userDTO = users.Select(u => u.ToDTO()).ToList();
-            return userDTO;
+            List<UserListItemDTO> itemsDTO = pagedUsers.Items
+                .Select(u => u.ToDTO())
+                .ToList();
 
+            return PaginationResponse<UserListItemDTO>.Create(
+                itemsDTO,
+                pagedUsers.TotalCount,
+                query.Pagination);
         }
     }
 }

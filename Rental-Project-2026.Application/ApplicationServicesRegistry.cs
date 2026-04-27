@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using Rental_Project_2026.Application.Contracts.Pagination;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.ActiveBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.DeactivateBranch;
@@ -6,14 +8,13 @@ using Rental_Project_2026.Application.UseCases.Branches.Commands.DeleteBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.UpdateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchById;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList;
-using Rental_Project_2026.Application.Utilities.Mediator;
-using Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList;
-using Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById;
 using Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser;
 using Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser;
-using Rental_Project_2026.Application.UseCases.Users.Commands.Update_User;
 using Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStatus;
-using FluentValidation;
+using Rental_Project_2026.Application.UseCases.Users.Commands.Update_User;
+using Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById;
+using Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList;
+using Rental_Project_2026.Application.Utilities.Mediator;
 
 namespace Rental_Project_2026.Application
 {
@@ -38,7 +39,7 @@ namespace Rental_Project_2026.Application
             services.AddScoped<IRequestHandler<GetUserByIdQuery, UserDetailDTO>, GetUserByIdUseCase>();
             services.AddScoped<IRequestHandler<CreateUserCommand, Guid>, CreateUserUseCase>();
             services.AddScoped<IRequestHandler<DeleteUserCommand>, DeleteUserUseCase>();
-            services.AddScoped<IRequestHandler<GetUsersListQuery, IEnumerable<UserListItemDTO>>, GetUsersListUseCase>();
+            services.AddScoped<IRequestHandler<GetUsersListQuery, PaginationResponse<UserListItemDTO>>, GetUsersListUseCase>();
             services.AddScoped<IRequestHandler<UpdateUserCommand>, UpdateUserUseCase>();
             services.AddScoped<IRequestHandler<ToggleUserStatusCommand>, ToggleUserStatusUseCase>();
 

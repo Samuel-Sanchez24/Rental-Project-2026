@@ -24,8 +24,8 @@ namespace Rental_Project_2026.Web.Controllers
         {
             try
             {
-                IEnumerable<UserListItemDTO> list = await _mediator.Send(new GetUsersListQuery());
-                return (View(list));
+                var response = await _mediator.Send(new GetUsersListQuery());
+                return View(response.Items);
             }
             catch (Exception ex)
             {
