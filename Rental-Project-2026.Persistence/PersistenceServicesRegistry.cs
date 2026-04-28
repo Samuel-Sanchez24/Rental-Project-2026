@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Rental_Project_2026.Application.Contracts.Repositories;
 using Rental_Project_2026.Persistence.Repositories;
+using Rental_Project_2026.Persistence.Seeding;
 using Rental_Project_2026.Persistence.UnitOfWorks;
 
 namespace Rental_Project_2026.Persistence
@@ -21,6 +22,7 @@ namespace Rental_Project_2026.Persistence
             services.AddScoped<IUnitOfWork, EfCoreUnitOfWork>();
             services.AddScoped<IBranchesRepository, BranchesRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
+            services.AddTransient<SeedDb>();
 
             return services;
         }
