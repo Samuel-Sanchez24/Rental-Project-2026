@@ -2,6 +2,7 @@ using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Rental_Project_2026.Application;
 using Rental_Project_2026.Persistence;
+using Rental_Project_2026.Persistence.Seeding;
 using Rental_Project_2026.Web.Middlewares;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,13 @@ builder.Services.AddPersistenceServices();
 
 WebApplication app = builder.Build();
 
-// Configure the HTTP request pipeline.
+using (IServiceScope scope = app.Services.CreateScope())
+{
+    SeedDb seedDb = scope.ServiceProvider.GetRequiredService<SeedDb>();
+    await seedDb.SeedAsync();
+}
+
+    // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
