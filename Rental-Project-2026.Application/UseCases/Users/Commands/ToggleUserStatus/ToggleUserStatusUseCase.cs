@@ -1,9 +1,6 @@
 ﻿using Rental_Project_2026.Application.Contracts.Repositories;
 using Rental_Project_2026.Domain.Entities;
 using Rental_Project_2026.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStatus
 {
@@ -29,7 +26,7 @@ namespace Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStat
                 user.Deactivate();
             else
                 user.Activate();
-
+                
             await _usersRepository.UpdateAsync(user);
             await _unitOfWork.CommitAsync();
         }

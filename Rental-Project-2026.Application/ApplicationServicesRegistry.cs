@@ -26,7 +26,7 @@ namespace Rental_Project_2026.Application
 
             // Branches Services UseCases
             services.AddScoped<IRequestHandler<CreateBranchCommand, Guid>, CreateBranchUseCase>();
-            services.AddScoped<IRequestHandler<GetBranchesListQuery, IEnumerable<BranchListItemDTO>>, GetBranchesListUseCase>();
+            services.AddScoped<IRequestHandler<GetBranchesListQuery, PaginationResponse<BranchListItemDTO>>, GetBranchesListUseCase>();
             services.AddScoped<IRequestHandler<UpdateBranchCommand>, UpdateBranchUseCase>();
             services.AddScoped<IRequestHandler<GetBranchByIdQuery, BranchDetailDTO>, GetBranchByIdUseCase>();
             services.AddScoped<IRequestHandler<DeleteBranchCommand>, DeleteBranchUseCase>();

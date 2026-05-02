@@ -8,7 +8,8 @@ namespace Rental_Project_2026.Persistence.Seeding
         {
             _seeders = new List<ISeedable>
             {
-                new UsersSeeder(context)
+                new UsersSeeder(context),
+                new BranchesSeeder(context)
             };
         }
 

@@ -168,7 +168,7 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ToggleStatus(Guid id)
+        public async Task<IActionResult> ToggleStatus(Guid id)  
         {
             try
             {

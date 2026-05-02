@@ -1,5 +1,6 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Rental_Project_2026.Application.Contracts.Pagination;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.ActiveBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.DeactivateBranch;
@@ -22,18 +23,53 @@ namespace Rental_Project_2026.Web.Controllers
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            int page = 1,
+            int pageSize = PaginationRequest.DEFAULT_PAGE_SIZE,
+            string? nameFilter = null,
+            string? cityFilter = null,
+            BranchStatus? statusFilter = null)
         {
             try
             {
-                IEnumerable<BranchListItemDTO> list = await _mediator.Send(new GetBranchesListQuery());
-                return View(list);
+                PaginationRequest pagination = new PaginationRequest(page, pageSize);
+                
+                GetBranchesListQuery query = new GetBranchesListQuery
+                {
+                    Pagination = pagination,
+                    NameFilter = nameFilter,
+                    CityFilter = cityFilter,
+                    StatusFilter = statusFilter
+                };
 
+                PaginationResponse<BranchListItemDTO> response = await _mediator.Send(query);
+
+                BranchesIndexViewModel viewModel = new BranchesIndexViewModel
+                {
+                    List = response,
+                    FilterName = nameFilter ?? string.Empty,
+                    FilterCity = cityFilter ?? string.Empty,
+                    FilterStatus = statusFilter
+                };
+
+                return View(viewModel);
             }
             catch (Exception ex)
             {
                 _notyfService.Error($"Error al cargar las sucursales: {ex.Message}");
-                return View(new List<BranchListItemDTO>());
+
+                BranchesIndexViewModel viewModel = new BranchesIndexViewModel
+                {
+                    List = PaginationResponse<BranchListItemDTO>.Create(
+                        new List<BranchListItemDTO>(),
+                        0,
+                        new PaginationRequest(page, pageSize)),
+                    FilterName = nameFilter ?? string.Empty,
+                    FilterCity = cityFilter ?? string.Empty,
+                    FilterStatus = statusFilter
+
+                };
+                return View(viewModel);
             }
         }
 
