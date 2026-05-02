@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Rental_Project_2026.Application.Contracts.Pagination;
 using Rental_Project_2026.Application.Contracts.Repositories;
 using Rental_Project_2026.Application.Utilities.Mediator;
 using Rental_Project_2026.Domain.Entities.Branches;
 
 namespace Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList
 {
-    public class GetBranchesListUseCase : IRequestHandler<GetBranchesListQuery, IEnumerable<BranchListItemDTO>>
+    public class GetBranchesListUseCase : IRequestHandler<GetBranchesListQuery, PaginationResponse<BranchListItemDTO>>
     {
         private readonly IBranchesRepository _branchesRepository;
 
@@ -16,13 +17,21 @@ namespace Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesL
             _branchesRepository = branchesRepository;
         }
 
-        public async Task<IEnumerable<BranchListItemDTO>> Handle(GetBranchesListQuery request)
+        public async Task<PaginationResponse<BranchListItemDTO>> Handle(GetBranchesListQuery query)
         {
-            IEnumerable<Branch> branches = await _branchesRepository.GetListAsync();
+            PaginationResponse<Branch> pagedBranches = await _branchesRepository.GetPagedList(
+                query.Pagination,
+                query.NameFilter,
+                query.CityFilter,
+                query.AddressFilter,
+                query.PhoneNumberFilter,
+                query.StatusFilter);
 
-            List<BranchListItemDTO> branchesDTO = branches.Select(b => b.ToDTO())
-                                                          .ToList();
-            return branchesDTO;
+            List<BranchListItemDTO> itemsDTO = pagedBranches.Items
+                .Select(b => b.ToDTO())
+                .ToList();
+            
+            return PaginationResponse<BranchListItemDTO>.Create(itemsDTO, pagedBranches.TotalCount, query.Pagination);
         }
     }
 }   

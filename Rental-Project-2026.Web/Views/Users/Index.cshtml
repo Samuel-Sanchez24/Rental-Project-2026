@@ -115,7 +115,7 @@
                             <td>@item.Email</td>
                             <td>@item.Phone</td>
                             <td>@item.Role</td>
-                            <td>@item.Status</td>
+                            <td class="user-status">@item.Status</td>
                             <td>
                                 <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-info">
                                     Ver
@@ -125,7 +125,7 @@
                                     Editar
                                 </a>
 
-                                @if (item.Status == UserStatus.Active)
+                                @if (item.Status.ToString() == "Active")
                                 {
                                     <button type="button" class="btn btn-sm btn-danger btnToggleStatus" data-id="@item.id">
                                         Desactivar
@@ -202,8 +202,12 @@
                     title: "¨Desea cambiar el estado del usuario?",
                     text: "El usuario cambiar  su estado actual.",
                     showCancelButton: true,
-                    confirmButtonText: "S¡",
-                    cancelButtonText: "Cancelar"
+                    confirmButtonText: "Sí",
+                    cancelButtonText: "Cancelar",
+                    background: "#0b1e33",
+                    color: "#ffffff",
+                    confirmButtonColor: "#4f46e5",
+                    cancelButtonColor: "#6c757d"
                 }).then((result) => {
 
                     if (result.isConfirmed) {
@@ -215,18 +219,16 @@
                             success: function (response) {
 
                                 if (response.success) {
-
-                                    if (button.hasClass('btn-danger')) {
-                                        button.removeClass('btn-danger')
-                                              .addClass('btn-success')
-                                              .text('Activar');
-                                    } else {
-                                        button.removeClass('btn-success')
-                                              .addClass('btn-danger')
-                                              .text('Desactivar');
-                                    }
-
-                                    Swal.fire("Listo", "Estado actualizado", "success");
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Estado actualizado",
+                                        text: response.message,
+                                        timer: 1200,
+                                        background: "#0b1e33",
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        location.reload();
+                                    });
                                 }
                                 else {
                                     Swal.fire("Error", response.message, "error");

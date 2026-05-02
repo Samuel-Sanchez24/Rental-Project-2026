@@ -1,8 +1,10 @@
-﻿@model IEnumerable<Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList.BranchListItemDTO>
+﻿@model Rental_Project_2026.Web.DTOs.Branches.BranchesIndexViewModel;
 @using Rental_Project_2026.Domain.Entities.Branches;
+
 
 @{
     ViewData["Title"] = "Sucursales";
+    int totalPages = Model.List.TotalPages == 0 ? 1 : Model.List.TotalPages;
 }
 <link rel="stylesheet" href="~/css/theme-dark.css" />
 
@@ -26,6 +28,60 @@
                 <div class="col-md-1">
                     <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> </a>
                 </div>
+
+                <form method="get" asp-action="Index" class="row g-3 mb-4">
+                    <input type="hidden" name="page" value="1" />
+
+                    <div class="col-md-3">
+                        <label for="nameFilter" class="form-label">Nombre</label>
+                        <input id="nameFilter", name="nameFilter" class="form-control" value="@Model.FilterName" />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="cityFilter" class="form-label">Ciudad</label>
+                        <input id="cityFilter" , name="cityFilter" class="form-control" value="@Model.FilterCity" />
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="statusFilter" class="form-label">Estado</label>
+                        <select id="statusFilter" name="statusFilter" class="form-select">
+                            <option value="">Todos</option>
+                            @foreach (BranchStatus status in Enum.GetValues<BranchStatus>())
+                            {
+                                if (Model.FilterStatus == status)
+                                {
+                                    <option value="@status" selected>@status</option>
+                                }
+                                else
+                                {
+                                    <option value="@status">@status</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="pageSize" class="form-label">Tamaño</label>
+                        <select id="pageSize" name="pageSize" class="form-select">
+                            @foreach (int size in new[] { 5, 10, 20, 50 })
+                            {
+                                if (Model.List.PageSize == size)
+                                {
+                                    <option value="@size" selected>@size</option>
+                                }
+                                else
+                                {
+                                    <option value="@size">@size</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+                    </div>
+                </form>
             </div>
         </div>
 
@@ -34,24 +90,30 @@
                 <thead>
                     <tr>
                         <th>Sucursal</th>
+                        <th>Ciudad</th>
+                        <th>Direccion</th>
+                        <th>Telefono</th>
                         <th>Activa</th>
-                        <th></th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.List.Items)
                     {
                         <tr>
                             <td>@item.Name</td>
+                            <td>@item.City</td>
+                            <td>@item.Address</td>
+                            <td>@item.Phone</td>
                             <td>
 
                                 @if(item.Status == BranchStatus.Active)
                                 {
-                                    <span class="text-success"><i class="bi bi-check2-circle"></i> </span>
+                                    <span class="text-success"><i class="bi bi-check2-circle fs-4"></i> </span>
                                 }
                                 else
                                 {
-                                    <span class="text-success"><i class="bi bi-ban"></i> </span>
+                                    <span class="text-danger"><i class="bi bi-ban fs-4"></i> </span>
 
                                 }
 
@@ -62,11 +124,11 @@
                                 {
                                     <form method="post" asp-action="Deactivate" asp-route-id="@item.Id" style="display: contents;">
                                         <button type="submit" 
-                                                class="btn btn-success"
+                                                class="btn btn-link"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement ="top"
                                                 title = "Desactivar Sucursal">
-                                            <i class="bi bi-toggle-on"></i>
+                                            <i class="bi bi-toggle-on text-success fs-4"></i>
                                         </button>
                                     </form>
                                 }
@@ -74,59 +136,99 @@
                                 {
                                     <form method="post" asp-action="Activate" asp-route-id="@item.Id" style="display: contents;">
                                         <button type="submit"
-                                                class="btn btn-secondary"
+                                                class="btn btn-link"
                                                 data-bs-toggle="tooltip"
                                                 data-bs-placement ="top"
                                                 title = "Activar Sucursal">
-                                            <i class="bi bi-toggle-off"></i>
+                                            <i class="bi bi-toggle-off text-secondary fs-4"></i>
                                         </button>
                                     </form>
                                 }
 
 
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
-                                    <i class="bi bi-pencil-fill"></i>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link">
+                                    <i class="bi bi-pencil-fill text-warning fs-4"></i>
                                 </a>
 
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display: contents">
-                                    
-                                    <button type="submit" class="btn btn-sm btn-danger">
-                                        <i class="bi bi-trash"></i>
+                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="formDeleteBranch" style="display: contents">
+                                    <button type="button" class="btn btn-sm btn-link" onclick="confirmDeleteBranch(this)">
+                                        <i class="bi bi-trash text-danger fs-4"></i>
                                     </button>
                                 </form>
                             </td>
                         </tr>
-                    }
+                    }   
                 </tbody>
 
             </table>
+
+            <div class="d-flex justify-content-between align-items-center mt-3">
+                @if (Model.List.HasPreviousPage)
+                {
+                    <a asp-action="Index"
+                           asp-route-page="@(Model.List.PageNumber - 1)"
+                           asp-route-pageSize="@Model.List.PageSize"
+                           asp-route-nameFilter="@Model.FilterName"
+                           asp-route-cityFilter="@Model.FilterCity"
+                           asp-route-statusFilter="@Model.FilterStatus"
+                           class="btn btn-outline-primary">
+                        Anterior
+                    </a>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-outline-secondary" disabled>Anterior</button>
+                }
+
+                <span class="fw-semibold">
+                    Pagina @Model.List.PageNumber / @totalPages
+                </span>
+
+                @if (Model.List.HasNextPage)
+                {
+                    <a asp-action="Index"
+                           asp-route-page="@(Model.List.PageNumber + 1)"
+                           asp-route-pageSize="@Model.List.PageSize"
+                           asp-route-nameFilter="@Model.FilterName"
+                           asp-route-cityFilter="@Model.FilterCity"
+                           asp-route-statusFilter="@Model.FilterStatus"
+                           class="btn btn-outline-primary">
+                        Siguiente
+                    </a>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-outline-secondary" disabled>Siguiente</button>
+                }
+            </div>
         </div>
 
     </div>
 
 </section>
 
-@section Scripts{
+@section Scripts {
     <script>
-        $(document).ready(function(){
-            $('.btnDelete').click(function(event){
+        function confirmDeleteBranch(button) {
 
-                event.preventDefault();
+            Swal.fire({
+                icon: "question",
+                title: "¿Desea eliminar la sucursal?",
+                text: "No podrá revertir la acción",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+                background: "#0b1e33",
+                color: "#ffffff",
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d"
+            }).then((result) => {
 
-                Swal.fire({
-                    icon: "question",
-                    title: "¿Desea eliminar la sucursal?",
-                    Text: "No podra revertir la accion",
-                    showCancelButton = true 
-                }).then((result) => {
+                if (result.isConfirmed) {
+                    button.closest("form").submit();
+                }
 
-                    if (result.isConfirmed){
-
-                        const form = $(this).closest('form');
-                        form.submit();
-                    }
-                });
             });
-        });
+        }
     </script>
 }
