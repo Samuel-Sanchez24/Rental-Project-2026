@@ -16,12 +16,17 @@ namespace Rental_Project_2026.Persistence
         }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Vehicle>()
+                .Property(v => v.DailyPrice)
+                .HasPrecision(18, 2);
         }
     }
 }
