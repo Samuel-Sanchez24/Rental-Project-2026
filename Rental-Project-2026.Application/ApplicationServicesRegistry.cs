@@ -14,6 +14,12 @@ using Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStatus;
 using Rental_Project_2026.Application.UseCases.Users.Commands.Update_User;
 using Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById;
 using Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList;
+using Rental_Project_2026.Application.UseCases.Vehicles.Commands.CreateVehicle;
+using Rental_Project_2026.Application.UseCases.Vehicles.Commands.DeleteVehicle;
+using Rental_Project_2026.Application.UseCases.Vehicles.Commands.UpdateVehicle;
+using Rental_Project_2026.Application.UseCases.Vehicles.Commands.ChangeStatusVehicle;
+using Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleById;
+using Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleList;
 using Rental_Project_2026.Application.Utilities.Mediator;
 
 namespace Rental_Project_2026.Application
@@ -42,6 +48,18 @@ namespace Rental_Project_2026.Application
             services.AddScoped<IRequestHandler<GetUsersListQuery, PaginationResponse<UserListItemDTO>>, GetUsersListUseCase>();
             services.AddScoped<IRequestHandler<UpdateUserCommand>, UpdateUserUseCase>();
             services.AddScoped<IRequestHandler<ToggleUserStatusCommand>, ToggleUserStatusUseCase>();
+
+            //Vehicles Services UseCases
+            services.AddScoped<IRequestHandler<CreateVehicleCommand, Guid>, CreateVehicleUseCase>();
+            services.AddScoped<IRequestHandler<GetVehiclesListQuery, PaginationResponse<VehicleListItemDTO>>, GetVehiclesListUseCase>();
+            services.AddScoped<IRequestHandler<UpdateVehicleCommand>, UpdateVehicleUseCase>();
+            services.AddScoped<IRequestHandler<GetVehicleByIdQuery, VehicleDetailDTO>, GetVehicleByIdUseCase>();
+            services.AddScoped<IRequestHandler<DeleteVehicleCommand>, DeleteVehicleUseCase>();
+            services.AddScoped<IRequestHandler<ChangeStatusVehicleCommand, Guid>, ChangeStatusVehicleUseCase>();
+            //Vehicles Validators
+            services.AddValidatorsFromAssemblyContaining<CreateVehicleCommandValidator>();
+
+
 
 
             return services;

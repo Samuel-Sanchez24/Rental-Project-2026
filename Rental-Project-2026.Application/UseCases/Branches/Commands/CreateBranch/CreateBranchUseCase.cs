@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Rental_Project_2026.Application.Contracts.Repositories;
+﻿using Rental_Project_2026.Application.Contracts.Repositories;
 using Rental_Project_2026.Domain.Entities.Branches;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch
 {
@@ -20,7 +16,7 @@ namespace Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranc
 
         public async Task<Guid> Handle(CreateBranchCommand command)
         {
-            Branch branch = new Branch(command.Name, command.City,command.Address,command.Phone);
+            Branch branch = new Branch(command.Name, command.City, command.Address, command.Phone);
             try
             {
                 Branch newBranch = await _repository.CreateAsync(branch);
