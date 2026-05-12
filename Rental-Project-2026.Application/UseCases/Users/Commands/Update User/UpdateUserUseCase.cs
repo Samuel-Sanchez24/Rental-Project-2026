@@ -19,17 +19,17 @@ namespace Rental_Project_2026.Application.UseCases.Users.Commands.Update_User
         }
         public async Task Handler(UpdateUserCommand command)
         {
-            User? user = await _usersRepository.GetByIdAsync(command.id);
+            User? user = await _usersRepository.GetByIdAsync(command.Id);
             if (user == null)
-            {
+            {   
                 throw new BusinessRulesException("El usuario no existe.");
             }
 
             var existingUserWithEmail = await _usersRepository.GetByEmailAsync(command.Email);
-            if (existingUserWithEmail != null && existingUserWithEmail.id != command.id)
+            if (existingUserWithEmail != null && existingUserWithEmail.Id != command.Id)
                 throw new BusinessRulesException("El correo electrónico ya está en uso por otro usuario.");
 
-            user.UpdateUser(command.Name, command.Email, command.Phone, command.Role);
+            user.UpdateUser(command.FirstName, command.LastName, command.UserName, command.Email, command.Phone, command.Role);
             if (command.Status == UserStatus.Active)
             {
                 user.Activate();

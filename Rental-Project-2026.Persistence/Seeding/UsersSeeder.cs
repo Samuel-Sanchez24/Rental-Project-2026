@@ -1,36 +1,44 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Rental_Project_2026.Domain.Entities;
+using Rental_Project_2026.Persistence.Entities;
 
 namespace Rental_Project_2026.Persistence.Seeding
 {
-    internal class UsersSeeder : ISeedable
+    public class UsersSeeder 
     {
-        private readonly DataContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UsersSeeder(DataContext context)
+        public UsersSeeder(UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
         }
 
         public async Task SeedAsync()
         {
-            List<User> usersToSeed = new List<User>
-            {
-                new User("Administrador", "admin@rentalproject.com", "Password123", "3001234567", UserRole.Admin),
-                new User("Empleado Central", "empleado@rentalproject.com", "Password123", "3001234568", UserRole.Employee),
-                new User("Cliente", "cliente@rentalproject.com", "Password123", "3001234569", UserRole.Customer)
-            };
-
-            foreach (User user in usersToSeed)
-            {
-                bool exists = await _context.Users.AnyAsync(u => u.Email == user.Email);
-                if (!exists)
-                {
-                    await _context.Users.AddAsync(user);
-                }
-            }
-
-            await _context.SaveChangesAsync();
+            await CheckUserAsync();
         }
+
+        public async Task CheckUserAsync()
+        {
+            string email = "adminuser@gmail.com";
+
+            ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+
+            if(user is null)
+            {
+                user = new ApplicationUser
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true,
+                    Firtsname = "Seed Admin",
+                    Lastname = "Samuel"
+                };
+
+                IdentityResult userCreated = await _userManager.CreateAsync(user, "123456");
+            }
+        }
+
     }
 }

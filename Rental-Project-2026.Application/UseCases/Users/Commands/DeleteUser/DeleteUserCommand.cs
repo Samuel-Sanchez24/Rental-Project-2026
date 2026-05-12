@@ -6,6 +6,6 @@ namespace Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser
 {
     public class DeleteUserCommand : IRequest
     {
-        public Guid id { get; set; }
+        public string Id { get; set; } = null!;
     }
 }

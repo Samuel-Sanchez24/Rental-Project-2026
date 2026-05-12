@@ -16,10 +16,10 @@ namespace Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser
 
         public async Task Handler(DeleteUserCommand command)
         {
-            var user = await _usersRepository.GetByIdAsync(command.id);
+            var user = await _usersRepository.GetByIdAsync(command.Id);
             if (user == null)
             {
-                throw new BusinessRulesException($"El usuario con id: {command.id} no existe");
+                throw new BusinessRulesException($"El usuario con id: {command.Id} no existe");
             }
             user.Deactivate();
 

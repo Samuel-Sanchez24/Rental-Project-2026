@@ -10,15 +10,23 @@ namespace Rental_Project_2026.Persistence.Configurations
         {
             builder.ToTable("Users");
 
-            builder.Property(u => u.Name)
+            builder.Property(u => u.FirstName)
                    .HasMaxLength(50)
                    .IsRequired();
+
+            builder.Property(u => u.LastName)
+                    .HasMaxLength(50)
+                    .IsRequired();
+
+            builder.Property(u => u.UserName)
+                    .HasMaxLength(50)
+                    .IsRequired();
 
             builder.Property(u => u.Email)
                    .HasMaxLength(100)
                    .IsRequired();
 
-            builder.Property(u => u.PasswordHash)
+            builder.Property(u => u.EmailConfirmed)
                    .HasMaxLength(255)
                    .IsRequired();
 

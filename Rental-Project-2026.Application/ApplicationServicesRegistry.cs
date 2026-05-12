@@ -21,6 +21,8 @@ using Rental_Project_2026.Application.UseCases.Vehicles.Commands.ChangeStatusVeh
 using Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleById;
 using Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleList;
 using Rental_Project_2026.Application.Utilities.Mediator;
+using Rental_Project_2026.Application.UseCases.Account.Commands.Login;
+using Rental_Project_2026.Application.UseCases.Account.Commands.Logout;
 
 namespace Rental_Project_2026.Application
 {
@@ -43,11 +45,15 @@ namespace Rental_Project_2026.Application
 
             //Users Services UseCases
             services.AddScoped<IRequestHandler<GetUserByIdQuery, UserDetailDTO>, GetUserByIdUseCase>();
-            services.AddScoped<IRequestHandler<CreateUserCommand, Guid>, CreateUserUseCase>();
+            services.AddScoped<IRequestHandler<CreateUserCommand, string>, CreateUserUseCase>();
             services.AddScoped<IRequestHandler<DeleteUserCommand>, DeleteUserUseCase>();
             services.AddScoped<IRequestHandler<GetUsersListQuery, PaginationResponse<UserListItemDTO>>, GetUsersListUseCase>();
             services.AddScoped<IRequestHandler<UpdateUserCommand>, UpdateUserUseCase>();
             services.AddScoped<IRequestHandler<ToggleUserStatusCommand>, ToggleUserStatusUseCase>();
+
+            services.AddScoped<IRequestHandler<LoginCommand, AccountSignInResult>, LoginUseCase>();
+            services.AddScoped<IRequestHandler<LogoutCommand>, LogoutUseCase>();
+            services.AddValidatorsFromAssemblyContaining<LoginCommandValidator>();
 
             //Vehicles Services UseCases
             services.AddScoped<IRequestHandler<CreateVehicleCommand, Guid>, CreateVehicleUseCase>();
