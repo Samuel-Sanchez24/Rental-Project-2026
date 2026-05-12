@@ -1,4 +1,5 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rental_Project_2026.Application.Contracts.Pagination;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.ActiveBranch;
@@ -23,6 +24,7 @@ namespace Rental_Project_2026.Web.Controllers
             _mediator = mediator;
         }
 
+        [Authorize]
         public async Task<IActionResult> Index(
             int page = 1,
             int pageSize = PaginationRequest.DEFAULT_PAGE_SIZE,

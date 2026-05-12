@@ -18,15 +18,17 @@ namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById
         
         public async Task<UserDetailDTO> Handle(GetUserByIdQuery request)
         {
-            User? user = await _usersRepository.GetByIdAsync(request.id);
+            User? user = await _usersRepository.GetByIdAsync(request.Id);
             if (user == null)
             {
                 throw new BusinessRulesException("El usuario no existe.");
             }
             return new UserDetailDTO
             {
-                id = user.id,
-                Name = user.Name,
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserName = user.UserName,
                 Email = user.Email,
                 Phone = user.Phone,
                 Role = user.Role,

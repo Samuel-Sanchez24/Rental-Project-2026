@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser
 {
-    public class CreateUserUseCase : IRequestHandler<CreateUserCommand, Guid>
+    public class CreateUserUseCase : IRequestHandler<CreateUserCommand, string>
     {
         private readonly IUsersRepository _repository;
         private readonly IUnitOfWork _unitOfWork;
@@ -17,7 +17,7 @@ namespace Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Guid> Handle(CreateUserCommand command)
+        public async Task<string> Handle(CreateUserCommand command)
         {
             var existingUser = await _repository.GetByEmailAsync(command.Email);
             if (existingUser != null)
@@ -25,12 +25,18 @@ namespace Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser
                 throw new InvalidOperationException("Ya existe un usuario con este correo.");
             }
 
-            User user = new User(command.Name, command.Email, command.PasswordHash, command.Phone, command.Role);
+            User user = new User(
+                command.FirstName,
+                command.LastName,
+                command.UserName,
+                command.Email,
+                command.Phone,
+                command.Role);
             try
             {
                 User newUser = await _repository.CreateAsync(user);
                 await _unitOfWork.CommitAsync();
-                return newUser.id;
+                return newUser.Id;
             }
             catch
             {

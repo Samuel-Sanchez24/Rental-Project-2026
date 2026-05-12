@@ -7,32 +7,134 @@ namespace Rental_Project_2026.Domain.Entities
 {
     public class User
     {
-        public Guid id { get; set; }
-        public string Name { get; set; } = null!;
+        public string Id { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;  
+        public string UserName { get; set; } = null!;
         public string Email { get; set; } = null!;
-        public string PasswordHash { get; set; } = null!;
+        public bool EmailConfirmed { get; set; }
         public string Phone { get; set; } = null!;
         public UserRole Role { get; set; }
         public UserStatus Status { get; set; }
+        
+        
+        private User() { }
 
-        public User(string name, string email, string passwordHash, string phone, UserRole role)
+        public User(
+            string firstName,
+            string lastName,
+            string userName,
+            string email,
+            string phone,
+            UserRole role)
         {
-            ApplyBusinessRules(name, email, passwordHash, phone, role);
+            ValidateNames(firstName, lastName);
+            ValidateUserName(userName);
+            ValidateEmail(email);
+            ValidatePhone(phone);
+            ValidateRole(role);
 
-            id = Guid.CreateVersion7();
-            Name = name;
+            Id = Guid.CreateVersion7().ToString();
+            FirstName = firstName;
+            LastName = lastName;
+            UserName = userName;
             Email = email;
-            PasswordHash = passwordHash;
+            EmailConfirmed = false;
             Phone = phone;
             Role = role;
             Status = UserStatus.Active;
         }
 
-        public void UpdateUser(string name, string email, string phone, UserRole role)
+
+        public static User Reconstitute(
+            string id,
+            string firstName,
+            string lastName,
+            string userName,
+            string email,
+            bool emailConfirmed,
+            string phone,
+            UserRole role,
+            UserStatus status)
         {
-            ApplyBusinessRules(name, email, phone, role);
-            Name = name;
-            Email = email; 
+            ValidateId(id);
+            ValidateNames(firstName, lastName);
+            ValidateUserName(userName);
+            ValidateEmail(email);
+            ValidatePhone(phone);
+
+            return new User
+            {
+                Id = id,
+                FirstName = firstName,
+                LastName = lastName,
+                UserName = userName,
+                Email = email,
+                EmailConfirmed = emailConfirmed,
+                Phone = phone,
+                Role = role,
+                Status = status
+            };
+        }
+
+        private static void ValidateId(string Id)
+        {
+            if (string.IsNullOrWhiteSpace(Id))
+            {
+                throw new BusinessRulesException("El Id del usuario es requerido.");
+            }
+        }
+
+        private static void ValidateNames(string firstName, string lastName)
+        {
+            if (string.IsNullOrWhiteSpace(firstName) || firstName.Length < 2 || firstName.Length > 50)
+                throw new BusinessRulesException($"El {nameof(firstName)} es requerido (2-50 caracteres).");
+            if (string.IsNullOrWhiteSpace(lastName) || lastName.Length < 2 || lastName.Length > 50)
+                throw new BusinessRulesException($"El {nameof(lastName)} es requerido (2-50 caracteres).");
+        }
+
+        private static void ValidateEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email) || email.Length < 5 || email.Length > 80 || !email.Contains("@"))
+                throw new BusinessRulesException($"El {nameof(email)} es requerido y debe ser un correo válido (5-80 caracteres).");
+        }
+
+        private static void ValidateUserName(string userName)
+        {
+            if (string.IsNullOrWhiteSpace(userName) || userName.Length < 3 || userName.Length > 20)
+                throw new BusinessRulesException($"El {nameof(userName)} es requerido (3-20 caracteres).");
+        }
+
+        private static void ValidatePhone(string phone)
+        {
+            if (string.IsNullOrWhiteSpace(phone) || phone.Length < 7 || phone.Length > 12)
+                throw new BusinessRulesException($"El {nameof(phone)} debe tener entre 7 y 12 dígitos.");
+        }
+
+        private static void ValidateRole(UserRole role)
+        {
+            if (!Enum.IsDefined(typeof(UserRole), role))
+                throw new BusinessRulesException($"El {nameof(role)} no es válido.");
+        }
+
+        public void UpdateUser(
+            string firstName,
+            string lastName,
+            string userName,
+            string email,
+            string phone,
+            UserRole role)
+        {
+            ValidateNames(firstName, lastName);
+            ValidateUserName(userName);
+            ValidateEmail(email);
+            ValidatePhone(phone);
+            ValidateRole(role);
+
+            FirstName = firstName;
+            LastName = lastName;
+            UserName = userName;
+            Email = email;
             Phone = phone;
             Role = role;
         }
@@ -40,31 +142,5 @@ namespace Rental_Project_2026.Domain.Entities
         public void Activate() => Status = UserStatus.Active;
         public void Deactivate() => Status = UserStatus.Inactive;
 
-        public void ApplyBusinessRules(string name, string email, string passwordHash, string phone, UserRole role)
-        {
-            if (string.IsNullOrWhiteSpace(name) || name.Length < 2 || name.Length > 50)
-                throw new BusinessRulesException($"El {nameof(name)} es requerido (2-50 caracteres).");
-            if (string.IsNullOrWhiteSpace(email) || email.Length < 5 || email.Length > 100 || !email.Contains("@"))
-                throw new BusinessRulesException($"El {nameof(email)} es requerido y debe ser un correo válido (5-100 caracteres).");
-            if (string.IsNullOrWhiteSpace(passwordHash) || passwordHash.Length < 8)
-                throw new BusinessRulesException($"El {nameof(passwordHash)} es requerido y debe tener al menos 8 caracteres.");
-            if (string.IsNullOrWhiteSpace(phone) || phone.Length < 7 || phone.Length > 12)
-                throw new BusinessRulesException($"El {nameof(phone)} debe tener entre 7 y 12 dígitos.");
-            if (!Enum.IsDefined(typeof(UserRole), role))
-                throw new BusinessRulesException($"El {nameof(role)} no es válido.");
-        }
-
-        //SOBRECARGA PARA UPDATE (SIN PASSWORD)
-        public void ApplyBusinessRules(string name, string email, string phone, UserRole role)
-        {
-            if (string.IsNullOrWhiteSpace(name) || name.Length < 2 || name.Length > 50)
-                throw new BusinessRulesException($"El {nameof(name)} es requerido (2-50 caracteres).");
-            if (string.IsNullOrWhiteSpace(email) || email.Length < 5 || email.Length > 100 || !email.Contains("@"))
-                throw new BusinessRulesException($"El {nameof(email)} es requerido y debe ser un correo válido (5-100 caracteres).");
-            if (string.IsNullOrWhiteSpace(phone) || phone.Length < 7 || phone.Length > 12)
-                throw new BusinessRulesException($"El {nameof(phone)} debe tener entre 7 y 12 dígitos.");
-            if (!Enum.IsDefined(typeof(UserRole), role))
-                throw new BusinessRulesException($"El {nameof(role)} no es válido.");
-        }
     }
 }

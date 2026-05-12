@@ -1,24 +1,23 @@
+using Microsoft.AspNetCore.Identity;
+using Rental_Project_2026.Persistence.Entities;
+
 namespace Rental_Project_2026.Persistence.Seeding
 {
     public class SeedDb
     {
-        private readonly IEnumerable<ISeedable> _seeders;
+        private readonly DataContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public SeedDb(DataContext context)
+        public SeedDb(DataContext context, UserManager<ApplicationUser> userManager)
         {
-            _seeders = new List<ISeedable>
-            {
-                new UsersSeeder(context),
-                new BranchesSeeder(context)
-            };
+            _context = context;
+            _userManager = userManager;
         }
 
         public async Task SeedAsync()
         {
-            foreach (ISeedable seeder in _seeders)
-            {
-                await seeder.SeedAsync();
-            }
+            await new BranchesSeeder(_context).SeedAsync();
+            await new UsersSeeder(_userManager).SeedAsync();
         }
     }
 }

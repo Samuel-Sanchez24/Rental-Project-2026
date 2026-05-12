@@ -5,12 +5,22 @@ namespace Rental_Project_2026.Web.DTOs.Users
     public class EditUserDTO
     {
         [Required]
-        public Guid Id { get; set; }
+        public string Id { get; set; } = null!;
 
         [Required(ErrorMessage = "El nombre es obligatorio.")]
         [StringLength(50, MinimumLength = 2, ErrorMessage = "El nombre debe tener entre 2 y 50 caracteres.")]
         [Display(Name = "Nombre")]
-        public string Name { get; set; } = null!;
+        public string FirstName { get; set; } = null!;
+
+        [Required(ErrorMessage = "El apellido es obligatorio.")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "El apellido debe tener entre 2 y 50 caracteres.")]
+        [Display(Name = "Apellido")]
+        public string LastName { get; set; } = null!;
+
+        [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
+        [StringLength(50, MinimumLength = 2, ErrorMessage = "El nombre de usuario debe tener entre 2 y 50 caracteres.")]
+        [Display(Name = "Apellido")]
+        public string UserName { get; set; } = null!;
 
         [Required(ErrorMessage = "El correo es obligatorio.")]
         [EmailAddress(ErrorMessage = "Debe ingresar un correo válido.")]

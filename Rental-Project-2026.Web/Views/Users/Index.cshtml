@@ -111,29 +111,31 @@
                     @foreach (var item in Model.List.Items)
                     {
                         <tr>
-                            <td>@item.Name</td>
+                            <td>@item.FirstName</td>
+                            <td>@item.LastName</td>
+                            <td>@item.UserName</td>
                             <td>@item.Email</td>
                             <td>@item.Phone</td>
                             <td>@item.Role</td>
                             <td class="user-status">@item.Status</td>
                             <td>
-                                <a asp-action="Details" asp-route-id="@item.id" class="btn btn-sm btn-info">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">
                                     Ver
                                 </a>
 
-                                <a asp-action="Edit" asp-route-id="@item.id" class="btn btn-sm btn-warning">
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
                                     Editar
                                 </a>
 
                                 @if (item.Status.ToString() == "Active")
                                 {
-                                    <button type="button" class="btn btn-sm btn-danger btnToggleStatus" data-id="@item.id">
+                                    <button type="button" class="btn btn-sm btn-danger btnToggleStatus" data-id="@item.Id">
                                         Desactivar
                                     </button>
                                 }
                                 else
                                 {
-                                    <button type="button" class="btn btn-sm btn-success btnToggleStatus" data-id="@item.id">
+                                    <button type="button" class="btn btn-sm btn-success btnToggleStatus" data-id="@item.Id">
                                         Activar
                                     </button>
                                 }

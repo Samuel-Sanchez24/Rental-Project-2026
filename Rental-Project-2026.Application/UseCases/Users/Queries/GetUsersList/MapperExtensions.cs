@@ -11,8 +11,10 @@ namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList
         {
             return new UserListItemDTO
             {
-                id = user.id,
-                Name = user.Name,
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                UserName = user.UserName,
                 Email = user.Email,
                 Phone = user.Phone,
                 Role = user.Role,

@@ -21,6 +21,13 @@ namespace Rental_Project_2026.Web.Middlewares
             }
             catch (Exception ex)
             {
+                string path = context.Request.Path.Value?.ToLower() ?? "";
+
+                if (path.StartsWith("/home/error"))
+                {
+                    throw;
+                }
+
                 string message = "Ha ocurrido un error";
 
                 switch (ex)

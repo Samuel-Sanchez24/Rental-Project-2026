@@ -4,12 +4,17 @@ using Rental_Project_2026.Application;
 using Rental_Project_2026.Persistence;
 using Rental_Project_2026.Persistence.Seeding;
 using Rental_Project_2026.Web.Middlewares;
+using System.Reflection;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+//builder.Services.AddControllersWithViews();
+builder.Services
+    .AddControllersWithViews()
+    .AddApplicationPart(Assembly.Load("AspNetCoreHero.ToastNotification"));
+
 builder.Services.AddDistributedMemoryCache();
+
 builder.Services.AddSession(options =>
 {
     options.Cookie.HttpOnly = true;
@@ -34,27 +39,33 @@ using (IServiceScope scope = app.Services.CreateScope())
     await seedDb.SeedAsync();
 }
 
-    // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
-     app.UseHsts();
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
+app.MapStaticAssets();
+
 app.UseRouting();
 
 app.UseSession();
 
+app.UseExeptionHandlerMiddleware();
+
 app.UseAuthorization();
 
-app.MapStaticAssets();
+app.UseNotyf();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-app.UseNotyf();
-app.UseExeptionHandlerMiddleware();
 app.Run();

@@ -94,9 +94,10 @@ namespace Rental_Project_2026.Web.Controllers
                 }
                 CreateUserCommand command = new CreateUserCommand
                 {
-                    Name = dto.Name,
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    UserName = dto.UserName,
                     Email = dto.Email,
-                    PasswordHash = dto.Password,
                     Phone = dto.Phone,
                     Role = dto.Role,
                     Status = dto.Status
@@ -113,15 +114,17 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Edit([FromRoute] Guid id)
+        public async Task<IActionResult> Edit([FromRoute] string id)
         {
             try
             {
                 UserDetailDTO user = await _mediator.Send(new GetUserByIdQuery(id));
                 EditUserDTO editDto = new EditUserDTO
                 {
-                    Id = user.id,
-                    Name = user.Name,
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    UserName = user.UserName,
                     Email = user.Email,
                     Phone = user.Phone,
                     Role = user.Role,
@@ -148,8 +151,10 @@ namespace Rental_Project_2026.Web.Controllers
                 }
                 UpdateUserCommand command = new UpdateUserCommand
                 {
-                    id = dto.Id,
-                    Name = dto.Name,
+                    Id = dto.Id,
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    UserName = dto.UserName,
                     Email = dto.Email,
                     Phone = dto.Phone,
                     Role = dto.Role,
@@ -168,11 +173,11 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ToggleStatus(Guid id)  
+        public async Task<IActionResult> ToggleStatus(string id)  
         {
             try
             {
-                await _mediator.Send(new ToggleUserStatusCommand { id = id });
+                await _mediator.Send(new ToggleUserStatusCommand { Id = id });
                 return Json(new { success = true });
             }
             catch (Exception ex)

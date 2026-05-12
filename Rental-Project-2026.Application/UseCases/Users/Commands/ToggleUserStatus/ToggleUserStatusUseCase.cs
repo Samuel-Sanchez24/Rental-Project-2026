@@ -17,7 +17,7 @@ namespace Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStat
 
         public async Task Handler(ToggleUserStatusCommand command)
         {
-            User? user = await _usersRepository.GetByIdAsync(command.id);
+            User? user = await _usersRepository.GetByIdAsync(command.Id);
 
             if (user == null)
                 throw new BusinessRulesException("El usuario no existe.");
