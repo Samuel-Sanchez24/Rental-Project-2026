@@ -17,7 +17,8 @@ namespace Rental_Project_2026.Persistence.Seeding
         public async Task SeedAsync()
         {
             await new BranchesSeeder(_context).SeedAsync();
-            await new UsersSeeder(_userManager).SeedAsync();
+            await new PermissionsSeeder(_context).SeedAsync();
+            await new UsersSeeder(_userManager, _context ).SeedAsync();
         }
     }
 }
