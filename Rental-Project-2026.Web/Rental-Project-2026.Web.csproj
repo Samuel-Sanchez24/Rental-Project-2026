@@ -25,4 +25,8 @@
     <ProjectReference Include="..\Rental-Project-2026.Persistence\Rental-Project-2026.Persistence.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\vehicles\" />
+  </ItemGroup>
+
 </Project>

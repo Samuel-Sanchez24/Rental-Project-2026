@@ -18,7 +18,7 @@ namespace Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleBy
 
         public async Task<VehicleDetailDTO> Handle(GetVehicleByIdQuery request)
         {
-            Vehicle? vehicle = await _vehiclesRepository.GetByIdAsync(request.Id);
+            Vehicle? vehicle = await _vehiclesRepository.GetVehicleDetailByIdAsync(request.Id);
             if (vehicle == null)
             {
                 throw new BusinessRulesException("El vehículo no existe.");
@@ -33,7 +33,12 @@ namespace Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleBy
                 Year = vehicle.Year,
                 DailyPrice = vehicle.DailyPrice,
                 Status = vehicle.Status,
-                BranchId = vehicle.BranchId
+                BranchId = vehicle.BranchId,
+
+                ImageUrl = vehicle.ImageUrl,
+                BranchName = vehicle.Branch != null ? vehicle.Branch.Name : string.Empty,
+                BranchCity = vehicle.Branch != null ? vehicle.Branch.City : string.Empty,
+                BranchAddress = vehicle.Branch != null ? vehicle.Branch.Address : string.Empty
             };
         }
     }

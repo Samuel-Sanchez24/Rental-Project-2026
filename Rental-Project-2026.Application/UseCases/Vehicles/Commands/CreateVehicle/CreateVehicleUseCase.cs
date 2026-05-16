@@ -24,7 +24,8 @@ namespace Rental_Project_2026.Application.UseCases.Vehicles.Commands.CreateVehic
                 command.Year,
                 command.DailyPrice,
                 command.Status,
-                command.BranchId);
+                command.BranchId,
+                command.ImageUrl);
             try
             {
                 Vehicle newVehicle = await _repository.CreateAsync(vehicle);
