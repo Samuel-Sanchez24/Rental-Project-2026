@@ -15,9 +15,9 @@ namespace Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleLi
         public int Year { get; set; }
         public decimal DailyPrice { get; set; }
         public VehicleStatus Status { get; set; }
-
+        public string? ImageUrl { get; set; }
         public Guid BranchId { get; set; }
-        public string BranchName { get; set; } = null!;
-        public string BranchCity { get; set; } = null!;
+        public string BranchName { get; set; } = string.Empty;
+        public string BranchCity { get; set; } = string.Empty;
     }
 }

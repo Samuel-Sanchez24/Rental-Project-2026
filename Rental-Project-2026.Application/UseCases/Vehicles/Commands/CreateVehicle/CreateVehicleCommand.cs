@@ -14,7 +14,7 @@ namespace Rental_Project_2026.Application.UseCases.Vehicles.Commands.CreateVehic
         public required int Year { get; set; }
         public required decimal DailyPrice { get; set; } = 0;
         public required VehicleStatus Status { get; set; }
-        
+        public string? ImageUrl { get; set; }
         public required Guid BranchId { get; set; }
     }
 }

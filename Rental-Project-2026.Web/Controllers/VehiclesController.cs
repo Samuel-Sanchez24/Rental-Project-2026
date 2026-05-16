@@ -1,6 +1,8 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Rental_Project_2026.Application.Contracts.Pagination;
+using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList;
 using Rental_Project_2026.Application.UseCases.Vehicles.Commands.ChangeStatusVehicle;
 using Rental_Project_2026.Application.UseCases.Vehicles.Commands.CreateVehicle;
 using Rental_Project_2026.Application.UseCases.Vehicles.Commands.DeleteVehicle;
@@ -16,19 +18,21 @@ namespace Rental_Project_2026.Web.Controllers
     {
         private readonly INotyfService _notyfService;
         private readonly IMediator _mediator;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public VehiclesController(INotyfService notyfService, IMediator mediator)
+        public VehiclesController(INotyfService notyfService, IMediator mediator, IWebHostEnvironment hostEnvironment)
         {
             _notyfService = notyfService;
             _mediator = mediator;
+            _hostEnvironment = hostEnvironment;
         }
 
         public async Task<IActionResult> Index(
             int page = 1,
             int pageSize = PaginationRequest.DEFAULT_PAGE_SIZE,
-            string? brandFilter = null,
-            string? modelFilter = null,
-            string? colorFilter = null,
+            string? brandFilter = "",
+            string? modelFilter = "",
+            string? colorFilter = "",
             decimal? dailyPriceFilter = null,
             VehicleStatus? statusFilter = null)
         {
@@ -51,11 +55,9 @@ namespace Rental_Project_2026.Web.Controllers
                 VehicleIndexViewModel viewModel = new VehicleIndexViewModel
                 {
                     List = result,
-                    FilterBrand = brandFilter ?? string.Empty,
-                    FilterModel = modelFilter ?? string.Empty,
+                    FilterBrand = brandFilter ?? string.Empty,  
                     FilterColor = colorFilter ?? string.Empty,
-                    FilterDailyPrice = dailyPriceFilter ?? 0,
-                    FilterStatus = statusFilter ?? VehicleStatus.Available
+                    FilterStatus = statusFilter 
                 };
                 return View(viewModel);
             }
@@ -68,11 +70,9 @@ namespace Rental_Project_2026.Web.Controllers
                     List = PaginationResponse<VehicleListItemDTO>.Create
                     (new List<VehicleListItemDTO>(), 0, new PaginationRequest(page, pageSize)),
 
-                    FilterBrand = brandFilter ?? string.Empty,
-                    FilterModel = modelFilter ?? string.Empty,
-                    FilterColor = colorFilter ?? string.Empty,
-                    FilterDailyPrice = dailyPriceFilter ?? 0,
-                    FilterStatus = statusFilter ?? VehicleStatus.Available
+                    FilterBrand = brandFilter ?? string.Empty,                 
+                    FilterColor = colorFilter ?? string.Empty,                  
+                    FilterStatus = statusFilter
                 };
 
                 return View(viweModel);
@@ -80,21 +80,31 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
+            CreateVehicleDTO dto = new CreateVehicleDTO
+            {
+                Branches = await GetBranchesSelectListAsync()
+            };
+
+            return View(dto);
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateVehicleDTO dto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
+                    dto.Branches = await GetBranchesSelectListAsync();
+
                     _notyfService.Error("Por favor corrige los errores en el formulario");
                     return View(dto);
                 }
+                
+                string? imageUrl = await SaveVehicleImageAsync(dto.ImageFile);
 
                 CreateVehicleCommand command = new CreateVehicleCommand
                 {
@@ -106,6 +116,7 @@ namespace Rental_Project_2026.Web.Controllers
                     Year = dto.Year,
                     Status = dto.Status,
                     BranchId = dto.BranchId,
+                    ImageUrl = imageUrl
                 };
 
                 Guid NewVehicleId = await _mediator.Send(command);
@@ -135,7 +146,9 @@ namespace Rental_Project_2026.Web.Controllers
                     Year = dto.Year,
                     DailyPrice = dto.DailyPrice,
                     Status = dto.Status,
-                    BranchId = dto.BranchId
+                    BranchId = dto.BranchId,
+                    CurrentImageUrl = dto.ImageUrl,
+                    Branches = await GetBranchesSelectListAsync()
                 };
                 return View(editDto);
             }
@@ -147,6 +160,7 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(EditVehicleDTO dto)
         {
             try
@@ -155,6 +169,13 @@ namespace Rental_Project_2026.Web.Controllers
                 {
                     _notyfService.Error("Por favor corrige los errores en el formulario");
                     return View(dto);
+                }
+
+                string? imageUrl = dto.CurrentImageUrl;
+
+                if(dto.ImageFile != null && dto.ImageFile.Length > 0)
+                {
+                    imageUrl = await SaveVehicleImageAsync(dto.ImageFile);
                 }
 
                 UpdateVehicleCommand command = new UpdateVehicleCommand
@@ -167,7 +188,8 @@ namespace Rental_Project_2026.Web.Controllers
                     Year = dto.Year,
                     DailyPrice = dto.DailyPrice,
                     Status = dto.Status,
-                    BranchId = dto.BranchId
+                    BranchId = dto.BranchId,
+                    ImageUrl = imageUrl
                 };
 
                 await _mediator.Send(command);
@@ -209,6 +231,61 @@ namespace Rental_Project_2026.Web.Controllers
                 _notyfService.Error($"Ocurrio un error al actualizar el estado del vehiculo: {ex.Message}");
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        //METODO PARA GUARDAR IMAGENES
+        private async Task<string?> SaveVehicleImageAsync(IFormFile? imageFile)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+            {
+                return null;
+            }
+
+            string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".webp" };
+            string extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+
+            if (!allowedExtensions.Contains(extension))
+            {
+                throw new InvalidOperationException("El archivo debe ser una imagen válida: jpg, jpeg, png o webp.");
+            }
+
+            string uploadsFolder = Path.Combine(
+                _hostEnvironment.WebRootPath,
+                "uploads",
+                "vehicles"
+            );
+
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            string fileName = $"{Guid.NewGuid()}{extension}";
+            string filePath = Path.Combine(uploadsFolder, fileName);
+
+            using FileStream fileStream = new FileStream(filePath, FileMode.Create);
+            await imageFile.CopyToAsync(fileStream);
+
+            return $"/uploads/vehicles/{fileName}";
+        }
+
+        private async Task<List<SelectListItem>> GetBranchesSelectListAsync()
+        {
+            GetBranchesListQuery query = new GetBranchesListQuery
+            {
+                Pagination = new PaginationRequest(1,25), 
+                StatusFilter = BranchStatus.Active
+            };
+
+            PaginationResponse<BranchListItemDTO> branches = await _mediator.Send(query);
+
+            return branches.Items
+                .Select(branch => new SelectListItem
+                {
+                    Value = branch.Id.ToString(),
+                    Text = $"{branch.Name} - {branch.City}"
+                })
+                .ToList();
         }
     }
 }

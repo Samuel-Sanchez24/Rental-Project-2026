@@ -14,12 +14,13 @@ namespace Rental_Project_2026.Domain.Entities
         public int Year { get; set; }
         public decimal DailyPrice { get; set; }
         public VehicleStatus Status { get; set; }
+        public string? ImageUrl { get; set; }
 
         // Foreign key to Branch
         public Guid BranchId { get; set; }
-        public Branch branch { get; set; } = null!;
+        public Branch Branch { get; set; } = null!;
 
-        public Vehicle(string plate, string model, string brand,string color, int year, decimal dailyPrice, VehicleStatus status, Guid branchId)
+        public Vehicle(string plate, string model, string brand,string color, int year, decimal dailyPrice, VehicleStatus status, Guid branchId, string? imageUrl = null)
         {
             ApplyBusinessRules(plate, model, brand, color, year,dailyPrice, branchId);
 
@@ -30,8 +31,9 @@ namespace Rental_Project_2026.Domain.Entities
             Color = color;
             Year = year;
             DailyPrice = dailyPrice;
-            Status = VehicleStatus.Available;
+            Status = status;
             BranchId = branchId;
+            ImageUrl = imageUrl;
         }
 
         public void UpdateVehicle(string plate, string model, string brand, int year, string color, decimal dailyPrice,VehicleStatus status, Guid branchId)
@@ -43,6 +45,7 @@ namespace Rental_Project_2026.Domain.Entities
             Color = color;
             Year = year;
             DailyPrice = dailyPrice;
+            Status = status;
             BranchId = branchId;
         }
 

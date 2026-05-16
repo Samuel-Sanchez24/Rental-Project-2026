@@ -9,6 +9,7 @@ namespace Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleLi
     {
         public static VehicleListItemDTO ToDTO(this Vehicle vehicle)
         {
+            System.Diagnostics.Debug.WriteLine($"PLACA: {vehicle.Plate} | STATUS ENTIDAD: {vehicle.Status} | VALOR: {(int)vehicle.Status}");
             return new VehicleListItemDTO
             {
                 Id = vehicle.Id,
@@ -18,7 +19,12 @@ namespace Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleLi
                 Color = vehicle.Color,
                 Year = vehicle.Year,
                 DailyPrice = vehicle.DailyPrice,
-                Status = vehicle.Status
+                Status = vehicle.Status,
+                BranchId = vehicle.BranchId,
+                ImageUrl = vehicle.ImageUrl,
+
+                BranchName = vehicle.Branch != null ? vehicle.Branch.Name : string.Empty,
+                BranchCity = vehicle.Branch != null ? vehicle.Branch.City : string.Empty
             };
         }
     }

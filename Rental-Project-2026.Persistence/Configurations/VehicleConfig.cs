@@ -37,10 +37,13 @@ namespace Rental_Project_2026.Persistence.Configurations
             builder.Property(v => v.Status)
                    .IsRequired();
 
+            builder.Property(v => v.ImageUrl)
+                   .HasMaxLength(512);
+
             builder.Property(v => v.BranchId)
                    .IsRequired();
 
-            builder.HasOne(v => v.branch)
+            builder.HasOne(v => v.Branch)
                    .WithMany()
                    .HasForeignKey(v => v.BranchId)
                    .OnDelete(DeleteBehavior.Restrict);

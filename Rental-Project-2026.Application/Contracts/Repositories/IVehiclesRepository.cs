@@ -8,6 +8,7 @@ namespace Rental_Project_2026.Application.Contracts.Repositories
     {
         Task<Vehicle?> GetByPlateAsync(string plate);
         Task<List<Vehicle>> GetByBranchIdAsync(Guid branchId);
+        Task<Vehicle?> GetVehicleDetailByIdAsync(Guid id);
 
         Task<PaginationResponse<Vehicle>> GetPagedList(
             PaginationRequest request,

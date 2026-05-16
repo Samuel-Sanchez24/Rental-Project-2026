@@ -25,6 +25,14 @@ namespace Rental_Project_2026.Persistence.Repositories
             return await _context.Vehicles.Where(v => v.BranchId == branchId).ToListAsync();
         }
 
+        public async Task<Vehicle?> GetVehicleDetailByIdAsync(Guid id)
+        {
+            return await _context.Vehicles
+                .AsNoTracking()
+                .Include(v => v.Branch)
+                .FirstOrDefaultAsync(v => v.Id == id);
+        }
+
         public async Task<PaginationResponse<Vehicle>> GetPagedList(
             PaginationRequest request,
             string? plateFilter,
@@ -36,7 +44,11 @@ namespace Rental_Project_2026.Persistence.Repositories
             VehicleStatus? statusFilter,
             CancellationToken cancellationToken = default)
         {
-            IQueryable<Vehicle> query = _context.Vehicles.AsQueryable();
+            IQueryable<Vehicle> query = _context.Vehicles
+                .AsNoTracking()
+                .Include(v => v.Branch)
+                .AsQueryable();
+
             if (!string.IsNullOrWhiteSpace(plateFilter))
             {
                 string term = plateFilter.Trim();
@@ -49,14 +61,14 @@ namespace Rental_Project_2026.Persistence.Repositories
             }
             if (!string.IsNullOrWhiteSpace(brandFilter))
             {
-                string term = brandFilter.Trim();
-                query = query.Where(v => v.Brand.Contains(term));
+                string term = brandFilter.Trim().ToLower();
+                query = query.Where(v => v.Brand.ToLower().Contains(term));
             }
 
             if (!string.IsNullOrWhiteSpace(colorFilter))
             {
-                string term = colorFilter.Trim();
-                query = query.Where(v => v.Color.Contains(term));
+                string term = colorFilter.Trim().ToLower();
+                query = query.Where(v => v.Color.ToLower().Contains(term));
             }
             if (yearFilter.HasValue)
                 query = query.Where(v => v.Year == yearFilter.Value);
@@ -67,7 +79,8 @@ namespace Rental_Project_2026.Persistence.Repositories
                 query = query.Where(v => v.Status == statusFilter);
             }
             
-            query = query.OrderBy(v => v.Plate);    
+            query = query.OrderBy(v => v.Plate);
+
             return await query.ToPagedListAsync(request, cancellationToken);
         }
 

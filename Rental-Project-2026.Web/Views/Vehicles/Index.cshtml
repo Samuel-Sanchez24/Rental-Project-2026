@@ -1,7 +1,283 @@
-﻿
+﻿@model Rental_Project_2026.Web.DTOs.Vehicles.VehicleIndexViewModel
+@using Rental_Project_2026.Domain.Enums
+
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Vehículos";
+    int totalPages = Model.List.TotalPages == 0 ? 1 : Model.List.TotalPages;
 }
 
-<h1>Index</h1>
+<link rel="stylesheet" href="~/css/theme-dark.css" />
 
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-action="Index" asp-controller="Home">Inicio</a>
+            </li>
+            <li class="breadcrumb-item active">Vehículos</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section dashboard branch-page">
+
+    <div class="card branch-card">
+
+        <div class="card-header">
+            <div class="row">
+                <h3 class="m-0 font-weight-bold col-md-11 branch-title">@ViewData["Title"]</h3>
+
+                <div class="col-md-1">
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i>
+                    </a>
+                </div>
+
+                <form method="get" asp-action="Index" class="row g-3 mb-4">
+                    <input type="hidden" name="page" value="1" />   
+
+
+                    <div class="col-md-2">
+                        <label for="brandFilter" class="form-label">Marca</label>
+                        <input id="brandFilter" name="brandFilter" class="form-control" value="@Model.FilterBrand" />
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <label for="colorFilter" class="form-label">Color</label>
+                        <input id="colorFilter" name="colorFilter" class="form-control" value="@Model.FilterColor" />
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="statusFilter" class="form-label">Estado</label>
+                        <select id="statusFilter" name="statusFilter" class="form-select">
+                            <option value="">Todos</option>
+                            @foreach (VehicleStatus status in Enum.GetValues<VehicleStatus>())
+                            {
+                                if (Model.FilterStatus == status)
+                                {
+                                    <option value="@status" selected>@status</option>
+                                }
+                                else
+                                {
+                                    <option value="@status">@status</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="pageSize" class="form-label">Tamaño</label>
+                        <select id="pageSize" name="pageSize" class="form-select">
+                            @foreach (int size in new[] { 5, 10, 20, 50 })
+                            {
+                                if (Model.List.PageSize == size)
+                                {
+                                    <option value="@size" selected>@size</option>
+                                }
+                                else
+                                {
+                                    <option value="@size">@size</option>
+                                }
+                            }
+                        </select>
+                    </div>
+
+                    <div class="col-12 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card-body mt-3">
+
+            @if (Model.List.Items == null || !Model.List.Items.Any())
+            {
+                <div class="alert alert-info vehicle-empty-message">
+                    No hay vehículos registrados todavía.
+                </div>
+            }
+            else
+            {
+                <div class="vehicle-catalog-grid">
+                    @foreach (var item in Model.List.Items)
+                    {
+                        <div class="vehicle-card">
+
+                            <div class="vehicle-image-container">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl"
+                                         alt="Imagen del vehículo"
+                                         class="vehicle-image" />
+                                }
+                                else
+                                {
+                                    <div class="vehicle-image-placeholder">
+                                        <i class="bi bi-car-front fs-1"></i>
+                                        <span>Sin imagen</span>
+                                    </div>
+                                }
+
+                                <div class="vehicle-price">
+                                    @item.DailyPrice.ToString("C0")
+                                </div>
+                            </div>
+
+                            <div class="vehicle-card-body">
+
+                                <div class="d-flex justify-content-between align-items-start gap-2">
+                                    <div>
+                                        <h5 class="vehicle-title">@item.Brand @item.Model</h5>
+                                        <p class="vehicle-plate">Placa: @item.Plate</p>
+                                        <p style="color: yellow;">
+                                            Estado real: @item.Status - Valor: @((int)item.Status)
+                                        </p>
+                                        <p class="vehicle-branch">
+                                            <i class="bi bi-geo-alt"></i>
+                                            @item.BranchName - @item.BranchCity
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        @if (item.Status == VehicleStatus.Available)
+                                        {
+                                            <span class="vehicle-status status-available">Disponible</span>
+                                        }
+                                        else if (item.Status == VehicleStatus.Inactive)
+                                        {
+                                            <span class="vehicle-status status-inactive">Inactivo</span>
+                                        }
+                                        else if (item.Status == VehicleStatus.Rented)
+                                        {
+                                            <span class="vehicle-status status-rented">Rentado</span>
+                                        }
+                                        else if (item.Status == VehicleStatus.Maintenance)
+                                        {
+                                            <span class="vehicle-status status-maintenance">Mantenimiento</span>
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="vehicle-details">
+                                    <div>
+                                        <span>Color</span>
+                                        <strong>@item.Color</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Año</span>
+                                        <strong>@item.Year</strong>
+                                    </div>
+                                </div>
+
+                                <div class="vehicle-actions">
+
+                                    <a asp-action="Edit"
+                                           asp-route-id="@item.Id"
+                                           class="btn btn-sm btn-link"
+                                           data-bs-toggle="tooltip"
+                                           data-bs-placement="top"
+                                           title="Editar vehículo">
+                                        <i class="bi bi-pencil-fill text-warning fs-4"></i>
+                                    </a>
+
+                                    <form asp-action="Delete"
+                                          asp-route-id="@item.Id"
+                                          method="post"
+                                          class="formDeleteVehicle"
+                                          style="display: contents">
+
+                                        <button type="button"
+                                                class="btn btn-sm btn-link"
+                                                onclick="confirmDeleteVehicle(this)"
+                                                data-bs-toggle="tooltip"
+                                                data-bs-placement="top"
+                                                title="Eliminar vehículo">
+                                            <i class="bi bi-trash text-danger fs-4"></i>
+                                        </button>
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            }
+
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                @if (Model.List.HasPreviousPage)
+                {
+                    <a asp-action="Index"
+                           asp-route-page="@(Model.List.PageNumber - 1)"
+                           asp-route-pageSize="@Model.List.PageSize"
+                           asp-route-brandFilter="@Model.FilterBrand"
+                           asp-route-colorFilter="@Model.FilterColor"
+                           asp-route-statusFilter="@Model.FilterStatus"
+                           class="btn btn-outline-primary">
+                        Anterior
+                    </a>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-outline-secondary" disabled>Anterior</button>
+                }
+
+                <span class="fw-semibold">
+                    Página @Model.List.PageNumber / @totalPages
+                </span>
+
+                @if (Model.List.HasNextPage)
+                {
+                    <a asp-action="Index"
+                           asp-route-page="@(Model.List.PageNumber + 1)"
+                           asp-route-pageSize="@Model.List.PageSize"
+                           asp-route-brandFilter="@Model.FilterBrand"
+                           asp-route-colorFilter="@Model.FilterColor"
+                           asp-route-statusFilter="@Model.FilterStatus"
+                           class="btn btn-outline-primary">
+                        Siguiente
+                    </a>
+                }
+                else
+                {
+                    <button type="button" class="btn btn-outline-secondary" disabled>Siguiente</button>
+                }
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <script>
+        function confirmDeleteVehicle(button) {
+
+            Swal.fire({
+                icon: "question",
+                title: "¿Desea eliminar el vehículo?",
+                text: "No podrá revertir la acción",
+                showCancelButton: true,
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar",
+                background: "#0b1e33",
+                color: "#ffffff",
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d"
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+                    button.closest("form").submit();
+                }
+
+            });
+        }
+    </script>
+}
