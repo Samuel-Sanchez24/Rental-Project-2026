@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rental_Project_2026.Application.Contracts.Pagination;
+using Rental_Project_2026.Application.Contracts.Security;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.ActiveBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.DeactivateBranch;
@@ -9,8 +10,10 @@ using Rental_Project_2026.Application.UseCases.Branches.Commands.DeleteBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Commands.UpdateBranch;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchById;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList;
+using Rental_Project_2026.Domain.Entities.Account;
 using Rental_Project_2026.Web.DTOs.Branches;
-    
+using Rental_Project_2026.Web.Security;
+
 namespace Rental_Project_2026.Web.Controllers
 {
     public class BranchesController : Controller
@@ -24,7 +27,8 @@ namespace Rental_Project_2026.Web.Controllers
             _mediator = mediator;
         }
 
-        [Authorize]
+        [RequirePermission(PermissionCodesCatalog.SHOW_BRANCHES)]
+        [HttpGet]
         public async Task<IActionResult> Index(
             int page = 1,
             int pageSize = PaginationRequest.DEFAULT_PAGE_SIZE,
@@ -75,6 +79,7 @@ namespace Rental_Project_2026.Web.Controllers
             }
         }
 
+        [RequirePermission(PermissionCodesCatalog.CREATE_BRANCHES)]
         [HttpGet]
         public IActionResult Create()
         {
@@ -135,7 +140,9 @@ namespace Rental_Project_2026.Web.Controllers
             }
         }
 
+
         [HttpPost]
+        [RequirePermission(PermissionCodesCatalog.EDIT_BRANCHES)]
         public async Task<IActionResult> Edit(EditBranchDTO dto)
         {
             try
@@ -167,6 +174,7 @@ namespace Rental_Project_2026.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [RequirePermission(PermissionCodesCatalog.DELETE_BRANCHES)]
         [HttpPost]
         public async Task<IActionResult> Delete([FromRoute] Guid Id) 
         {

@@ -4,6 +4,7 @@ using System.Text;
 using Rental_Project_2026.Application.Contracts.Security;
 using static Rental_Project_2026.Application.Contracts.Security.PermissionCodesCatalog;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using Rental_Project_2026.Domain.Entities.Account;
 
 namespace Rental_Project_2026.Persistence.Seeding

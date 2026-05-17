@@ -1,4 +1,37 @@
-﻿<header id="header" class="header fixed-top d-flex align-items-center">
+﻿@inject IMediator Mediator
+
+
+@{
+    Rental_Project_2026.Application.UseCases.Account.Queries.GetAccountUserInfo.UserAccountInfoDTO user = null;
+
+    try
+    {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!string.IsNullOrWhiteSpace(userId))
+            {
+                user = await Mediator.Send(new Rental_Project_2026.Application
+                                                                 .UseCases
+                                                                 .Account
+                                                                 .Queries
+                                                                 .GetAccountUserInfo
+                                                                 .GetAccountUserInfoQuery { UserId = userId });
+
+            }
+        }
+
+    }
+    catch
+    {
+
+        user = null;
+    }
+
+}
+
+<header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
         <a asp-controller="Home" asp-action="Index" class="logo d-flex align-items-center">
