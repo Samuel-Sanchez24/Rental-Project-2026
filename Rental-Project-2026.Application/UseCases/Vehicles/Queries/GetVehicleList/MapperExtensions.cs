@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleList
 {
-    internal static class MapperExtensions
+    public static class MapperExtensions
     {
         public static VehicleListItemDTO ToDTO(this Vehicle vehicle)
         {

@@ -8,9 +8,9 @@ namespace Rental_Project_2026.Domain.Entities.Account
     public sealed class Permission
     {
         public Guid Id { get; private set; }
-        public string Code { get; private set; }
-        public string Description { get; private set; }
-        public String Module { get; private set; }
+        public string Code { get; private set; } = string.Empty;
+        public string Description { get; private set; } = string.Empty;
+        public String Module { get; private set; } = string.Empty;
 
         public ICollection<RolePermission> RolePermissions { get; private set; } = new List<RolePermission>();
 
@@ -24,7 +24,7 @@ namespace Rental_Project_2026.Domain.Entities.Account
 
             if (string.IsNullOrWhiteSpace(description))
 
-                throw new BusinessRulesException("La description es requerido");
+                throw new BusinessRulesException("La description es requerida");
 
             if (string.IsNullOrWhiteSpace(module))
 

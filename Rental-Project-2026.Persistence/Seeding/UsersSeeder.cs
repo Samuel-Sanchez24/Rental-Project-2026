@@ -19,43 +19,50 @@ namespace Rental_Project_2026.Persistence.Seeding
             _context = context;
         }
 
-        public async Task SeedAsync()
+        public async Task SeedAsync()   
         {
+            await SeedRolesAsync();
             await SeedUserAsync();
         }
 
         private async Task SeedUserAsync()
         {
-            await CheckUserAsync("adminuser@gmail.com", "Seed Admin", "", RolesCatalog.ADMIN);
-            await CheckUserAsync("basicuser@gmail.com", "Jhon", "Doe", RolesCatalog.USER);
+            await CheckUserAsync("adminuser@gmail.com", "Seed", "Admin", RolesCatalog.ADMIN);
+            await CheckUserAsync("basicuser@gmail.com", "Jhon", "Doe", RolesCatalog.CUSTOMER);
+            await CheckUserAsync("employeeuser@gmail.com", "Jane", "Smith", RolesCatalog.EMPLOYEE);
         }
 
         private async Task SeedRolesAsync()
         {
-            await CheckRoleAsync(RolesCatalog.ADMIN, PermissionCodesCatalog.All.Select(s => s.Code).ToList());
-            await CheckRoleAsync(RolesCatalog.CONTENT_EDITOR, new List<string>
+            await CheckRolesAsync(RolesCatalog.ADMIN, PermissionCodesCatalog.All.Select(s => s.Code).ToList());
+            await CheckRolesAsync(RolesCatalog.EMPLOYEE, new List<string>
             {
-                PermissionCodesCatalog.SHOW_BLOGS,
-                PermissionCodesCatalog.CREATE_BLOGS,
-                PermissionCodesCatalog.EDIT_BLOGS,
-                PermissionCodesCatalog.DELETE_BLOGS,
+                PermissionCodesCatalog.SHOW_VEHICLES,
+                PermissionCodesCatalog.EDIT_VEHICLES,
 
-                PermissionCodesCatalog.SHOW_SECTIONS,
-                PermissionCodesCatalog.CREATE_SECTIONS,
+                PermissionCodesCatalog.SHOW_BRANCHES,
+
+                PermissionCodesCatalog.EDIT_USERS,
+                PermissionCodesCatalog.SHOW_USERS
+
             });
 
-            await CheckRoleAsync(RolesCatalog.USER, new List<string>
+            await CheckRolesAsync(RolesCatalog.CUSTOMER, new List<string>
             {
-                PermissionCodesCatalog.SHOW_BLOGS,
+                PermissionCodesCatalog.SHOW_BRANCHES,
 
-                PermissionCodesCatalog.SHOW_SECTIONS,
+                PermissionCodesCatalog.SHOW_VEHICLES,
 
             }); 
         }    
 
         public async Task CheckUserAsync(string email, string firstname, string LastName, string RoleName)
         {
-            Role role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == RoleName);
+            Role? role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == RoleName);
+            if (role == null)
+            {
+                throw new Exception($"El rol '{RoleName}' no existe.");
+            }
 
             ApplicationUser? user = await _userManager.FindByEmailAsync(email);
 
@@ -66,7 +73,7 @@ namespace Rental_Project_2026.Persistence.Seeding
                     UserName = email,
                     Email = email,
                     EmailConfirmed = true,
-                    Firtsname = firstname,
+                    Firtsname = firstname,  
                     Lastname = LastName,
                     RoleId = role.Id
                 };
@@ -75,7 +82,7 @@ namespace Rental_Project_2026.Persistence.Seeding
             }
         }
 
-        private async Task CheckRoleAsync(string roleName, IReadOnlyList<string> permissionCodes)
+        private async Task CheckRolesAsync(string roleName, IReadOnlyList<string> permissionCodes)
         {
             Role? role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
             if (role is null)

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleById
 {
-    internal class GetVehicleByIdUseCase : IRequestHandler<GetVehicleByIdQuery, VehicleDetailDTO>
+    public class GetVehicleByIdUseCase : IRequestHandler<GetVehicleByIdQuery, VehicleDetailDTO>
     {
         private readonly IVehiclesRepository _vehiclesRepository;
         

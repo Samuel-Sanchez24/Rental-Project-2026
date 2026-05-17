@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Rental_Project_2026.Application.UseCases.Account.Queries.UserHasPermission
 {
@@ -10,13 +7,13 @@ namespace Rental_Project_2026.Application.UseCases.Account.Queries.UserHasPermis
         public UserHasPermissionQueryValidator()
         {
             RuleFor(x => x.UserId)
-                .NotEmpty().WithMessage("UserId is required.")
-                .NotNull().WithMessage("UserId cannot be null.");
+                .NotEmpty().WithMessage("El ID del usuario es requerido.")
+                .NotNull().WithMessage("El ID del usuario no puede estar nulo.");
 
 
             RuleFor(x => x.PermissionCode)
-                .NotEmpty().WithMessage("PermissionCode is required.")
-                .NotNull().WithMessage("PermissionCode cannot be null.");
+                .NotEmpty().WithMessage("El código de permiso es requerido.")
+                .NotNull().WithMessage("El código de permiso no puede estar nulo.");
         }
     }
 }

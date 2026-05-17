@@ -3,7 +3,7 @@ using Rental_Project_2026.Domain.Entities;
 
 namespace Rental_Project_2026.Application.UseCases.Vehicles.Commands.CreateVehicle
 {
-    internal class CreateVehicleUseCase : IRequestHandler<CreateVehicleCommand, Guid>
+    public class CreateVehicleUseCase : IRequestHandler<CreateVehicleCommand, Guid>
     {
         private readonly IVehiclesRepository _repository;
         private readonly IUnitOfWork _unitOfWork;

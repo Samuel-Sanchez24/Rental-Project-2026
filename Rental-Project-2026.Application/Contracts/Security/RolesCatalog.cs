@@ -7,7 +7,7 @@ namespace Rental_Project_2026.Application.Contracts.Security
     public class RolesCatalog
     {
         public const string ADMIN = "Admin";
-        public const string USER = "User"; 
-        public const string CONTENT_EDITOR = "ContentEditor";
+        public const string EMPLOYEE = "Employee";
+        public const string CUSTOMER = "Customer";
     }
 }
