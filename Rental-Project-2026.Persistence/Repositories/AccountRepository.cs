@@ -13,10 +13,11 @@ namespace Rental_Project_2026.Persistence.Repositories
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DataContext _context;
 
-        public AccountRepository(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+        public AccountRepository(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DataContext context)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _context = context;
         }
 
         public async Task<UserAccountInfoDTO> GetUserInfoAsync(string UserId, CancellationToken cancellationToken = default)

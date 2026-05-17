@@ -6,6 +6,6 @@ namespace Rental_Project_2026.Application.UseCases.Account.Queries.GetAccountUse
 {
     public class GetAccountUserInfoQuery : IRequest<UserAccountInfoDTO>
     {
-        public Guid UserId { get; set; }
+        public required string UserId { get; set; }
     }
 }

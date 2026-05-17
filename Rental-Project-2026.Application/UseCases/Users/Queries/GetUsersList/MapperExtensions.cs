@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList
 {
-    internal static class MapperExtensions
+    public static class MapperExtensions
     {
         public static UserListItemDTO ToDTO(this User user)
         {

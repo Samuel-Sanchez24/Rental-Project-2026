@@ -7,7 +7,7 @@ using Rental_Project_2026.Domain.Exceptions;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById
 {
-    internal class GetUserByIdUseCase : IRequestHandler<GetUserByIdQuery, UserDetailDTO>
+    public class GetUserByIdUseCase : IRequestHandler<GetUserByIdQuery, UserDetailDTO>
     {
         private readonly IUsersRepository _usersRepository;
 

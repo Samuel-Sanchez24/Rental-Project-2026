@@ -8,10 +8,9 @@ namespace Rental_Project_2026.Domain.Entities.Account
     public class RolePermission
     {
         public Guid RoleId { get; private set; }
-        public Guid PermissionId { get; set; }
+        public Guid PermissionId { get; private set; }
         public Role Role { get; set; }
         public Permission Permission { get; set; }
-
 
         private RolePermission() { } 
 

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Vehicles.Commands.CreateVehicle
 {
-    internal class CreateVehicleCommandValidator : AbstractValidator<CreateVehicleCommand>
+    public class CreateVehicleCommandValidator : AbstractValidator<CreateVehicleCommand>
     {
         public CreateVehicleCommandValidator()
         {

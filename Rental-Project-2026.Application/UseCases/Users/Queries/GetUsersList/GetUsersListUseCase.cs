@@ -4,7 +4,7 @@ using Rental_Project_2026.Domain.Entities;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList
 {
-    internal class GetUsersListUseCase : IRequestHandler<GetUsersListQuery, PaginationResponse<UserListItemDTO>>
+    public class GetUsersListUseCase : IRequestHandler<GetUsersListQuery, PaginationResponse<UserListItemDTO>>
     {
         private readonly IUsersRepository _userRepository;
 
