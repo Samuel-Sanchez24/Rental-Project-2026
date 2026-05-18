@@ -52,7 +52,6 @@
                 <div class="col-md-12">
                     <label asp-for="Status" class="form-label"></label>
                     <select asp-for="Status" class="form-select" asp-items="Html.GetEnumSelectList<BranchStatus>()">
-                        <option value="">Seleccione un estado</option>
                     </select>
                     <span asp-validation-for="Status" class="text-danger"></span>
                 </div>

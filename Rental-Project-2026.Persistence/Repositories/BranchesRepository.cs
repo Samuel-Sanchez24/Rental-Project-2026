@@ -1,5 +1,6 @@
 ﻿using Rental_Project_2026.Application.Contracts.Repositories;
 using Rental_Project_2026.Domain.Entities.Branches;
+//<<<<<<< Updated upstream
 using Microsoft.EntityFrameworkCore;
 using Rental_Project_2026.Application.Contracts.Pagination;
 using Rental_Project_2026.Persistence.Extensions;
