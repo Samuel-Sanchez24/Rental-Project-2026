@@ -79,14 +79,17 @@ namespace Rental_Project_2026.Web.Controllers
             }
         }
 
-        [RequirePermission(PermissionCodesCatalog.CREATE_BRANCHES)]
+
         [HttpGet]
+        [RequirePermission(PermissionCodesCatalog.CREATE_BRANCHES)]
         public IActionResult Create()
         {
             return View();
         }
 
+
         [HttpPost]
+        [RequirePermission(PermissionCodesCatalog.CREATE_BRANCHES)]
         public async Task<IActionResult> Create(CreateBranchDTO dto)
         {
             try
@@ -116,6 +119,7 @@ namespace Rental_Project_2026.Web.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        [RequirePermission(PermissionCodesCatalog.EDIT_BRANCHES)]
         [HttpGet]
         public async Task<IActionResult> Edit([FromRoute] Guid id)
         {
@@ -192,6 +196,7 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpPost]
+        [RequirePermission(PermissionCodesCatalog.EDIT_BRANCHES)]
         public async Task<IActionResult> Activate([FromRoute] Guid Id)
         {
             try
@@ -208,6 +213,7 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpPost]
+        [RequirePermission(PermissionCodesCatalog.EDIT_BRANCHES)]
         public async Task<IActionResult> Deactivate([FromRoute] Guid Id)
         {
             try

@@ -54,7 +54,7 @@ namespace Rental_Project_2026.Web.Security
                 PermissionCode = _permissionCode
 
             });
-            if (hasPermission)
+            if (!hasPermission)
             {
                 context.Result = new ForbidResult();
             }

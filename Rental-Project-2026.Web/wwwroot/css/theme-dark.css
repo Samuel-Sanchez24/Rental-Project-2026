@@ -786,3 +786,87 @@ body section.users-page .users-table td {
         color: #0d6efd;
         margin-right: 4px;
     }
+
+/* ==============================
+   ACCESS DENIED - DARK THEME
+   ============================== */
+
+body.theme-dark .access-denied-page,
+.access-denied-page {
+    background: #0f172a;
+    min-height: calc(100vh - 80px);
+    padding: 2rem 1.5rem;
+}
+
+body.theme-dark .access-denied-card,
+.access-denied-card {
+    background: linear-gradient(145deg, #111827, #1e293b);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 18px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    padding: 4rem 2rem;
+    color: #e5e7eb;
+}
+
+body.theme-dark .access-denied-icon,
+.access-denied-icon {
+    width: 82px;
+    height: 82px;
+    margin: 0 auto 1.8rem auto;
+    border-radius: 50%;
+    background: rgba(245, 158, 11, 0.12);
+    color: #fbbf24;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+body.theme-dark .access-denied-title,
+.access-denied-title {
+    color: #f8fafc;
+    font-size: 1.65rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+body.theme-dark .access-denied-text,
+.access-denied-text {
+    color: #cbd5e1;
+    font-size: 1.05rem;
+    max-width: 900px;
+    margin: 0 auto 2rem auto;
+    line-height: 1.7;
+}
+
+body.theme-dark .access-denied-actions,
+.access-denied-actions {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+    body.theme-dark .access-denied-actions .btn-secondary {
+        background: #334155;
+        border-color: #475569;
+        color: #f8fafc;
+    }
+
+        body.theme-dark .access-denied-actions .btn-secondary:hover {
+            background: #475569;
+            border-color: #64748b;
+            color: #ffffff;
+        }
+
+    body.theme-dark .access-denied-actions .btn-primary {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: #ffffff;
+    }
+
+        body.theme-dark .access-denied-actions .btn-primary:hover {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
