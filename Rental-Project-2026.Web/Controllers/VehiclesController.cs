@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Rental_Project_2026.Application.Contracts.Pagination;
+using Rental_Project_2026.Application.Contracts.Security;
 using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList;
 using Rental_Project_2026.Application.UseCases.Vehicles.Commands.ChangeStatusVehicle;
 using Rental_Project_2026.Application.UseCases.Vehicles.Commands.CreateVehicle;
@@ -11,6 +12,7 @@ using Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleById;
 using Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleList;
 using Rental_Project_2026.Domain.Enums;
 using Rental_Project_2026.Web.DTOs.Vehicles;
+using Rental_Project_2026.Web.Security;
 
 namespace Rental_Project_2026.Web.Controllers
 {
@@ -80,6 +82,7 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpGet]
+        [RequirePermission(PermissionCodesCatalog.CREATE_VEHICLES)]
         public async Task<IActionResult> Create()
         {
             CreateVehicleDTO dto = new CreateVehicleDTO
@@ -92,6 +95,7 @@ namespace Rental_Project_2026.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequirePermission(PermissionCodesCatalog.CREATE_VEHICLES)]
         public async Task<IActionResult> Create(CreateVehicleDTO dto)
         {
             try
@@ -131,6 +135,7 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpGet]
+        [RequirePermission(PermissionCodesCatalog.EDIT_VEHICLES)]
         public async Task<IActionResult> Edit([FromRoute] Guid Id)
         {
             try
@@ -161,6 +166,7 @@ namespace Rental_Project_2026.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequirePermission(PermissionCodesCatalog.EDIT_VEHICLES)]
         public async Task<IActionResult> Edit(EditVehicleDTO dto)
         {
             try
@@ -204,6 +210,7 @@ namespace Rental_Project_2026.Web.Controllers
         }
 
         [HttpPost]
+        [RequirePermission(PermissionCodesCatalog.DELETE_VEHICLES)]
         public async Task<IActionResult> Delete([FromRoute] Guid Id)
         {
             try

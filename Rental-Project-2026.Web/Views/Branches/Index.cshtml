@@ -1,6 +1,6 @@
 ﻿@model Rental_Project_2026.Web.DTOs.Branches.BranchesIndexViewModel;
 @using Rental_Project_2026.Domain.Entities.Branches;
-
+@inject IMediator Mediator
 
 @{
     ViewData["Title"] = "Sucursales";
@@ -25,9 +25,17 @@
         <div class="card-header">
             <div class="row">
                 <h3 class="m-0 font-weight-bold col-md-11 branch-title">@ViewData["Title"]</h3>
-                <div class="col-md-1">
-                    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> </a>
-                </div>
+
+                @if(await Mediator.Send(new UserHasPermissionQuery
+                    {
+                        UserId = User.FindFirstValue(ClaimTypes.NameIdentifier), 
+                        PermissionCode = PermissionCodesCatalog.CREATE_BRANCHES
+                    }))
+                {
+                    <div class="col-md-1">
+                        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> </a>
+                    </div>
+                }             
 
                 <form method="get" asp-action="Index" class="row g-3 mb-4">
                     <input type="hidden" name="page" value="1" />
