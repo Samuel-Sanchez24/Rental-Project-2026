@@ -1,7 +1,7 @@
-﻿using Rental_Project_2026.Domain.Entities.Branches;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Rental_Project_2026.Domain.Entities.Branches;
 
 namespace Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList
 {

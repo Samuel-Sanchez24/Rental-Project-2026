@@ -4,12 +4,8 @@ using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById
 {
-    public class GetUserByIdQuery : IRequest<UserDetailDTO>
+    public sealed class GetUserByIdQuery : IRequest<UserDetailDTO>
     {
-        public string Id { get;}
-        public GetUserByIdQuery(string id)
-        {
-            Id = id;
-        }
+        public required string Id { get; init; }
     }
 }

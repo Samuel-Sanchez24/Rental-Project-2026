@@ -8,7 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\ACCOU\" />
+    <Compile Remove="Entities\ACCOU\**" />
+    <EmbeddedResource Remove="Entities\ACCOU\**" />
+    <None Remove="Entities\ACCOU\**" />
   </ItemGroup>
 
 </Project>

@@ -6,30 +6,19 @@ namespace Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList
 {
     public class GetUsersListUseCase : IRequestHandler<GetUsersListQuery, PaginationResponse<UserListItemDTO>>
     {
-        private readonly IUsersRepository _userRepository;
+        private readonly IUsersRepository _usersRepository;
 
-        public GetUsersListUseCase(IUsersRepository userRepository)
+        public GetUsersListUseCase(IUsersRepository usersRepository)
         {
-            _userRepository = userRepository;
+            _usersRepository = usersRepository;
         }
 
         public async Task<PaginationResponse<UserListItemDTO>> Handle(GetUsersListQuery query)
         {
-            PaginationResponse<User> pagedUsers = await _userRepository.GetPagedList(
+            return await _usersRepository.GetPagedListAsync(
                 query.Pagination,
                 query.NameFilter,
-                query.EmailFilter,
-                query.RoleFilter,
-                query.StatusFilter);
-
-            List<UserListItemDTO> itemsDTO = pagedUsers.Items
-                .Select(u => u.ToDTO())
-                .ToList();
-
-            return PaginationResponse<UserListItemDTO>.Create(
-                itemsDTO,
-                pagedUsers.TotalCount,
-                query.Pagination);
+                query.RoleIdFilter);
         }
     }
 }

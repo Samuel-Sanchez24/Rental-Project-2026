@@ -1,28 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
-using Rental_Project_2026.Application.Contracts.Pagination;
-using Rental_Project_2026.Application.UseCases.Branches.Commands.ActiveBranch;
-using Rental_Project_2026.Application.UseCases.Branches.Commands.CreateBranch;
-using Rental_Project_2026.Application.UseCases.Branches.Commands.DeactivateBranch;
-using Rental_Project_2026.Application.UseCases.Branches.Commands.DeleteBranch;
-using Rental_Project_2026.Application.UseCases.Branches.Commands.UpdateBranch;
-using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchById;
-using Rental_Project_2026.Application.UseCases.Branches.Queries.GetBranchesList;
-using Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser;
-using Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser;
-using Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStatus;
-using Rental_Project_2026.Application.UseCases.Users.Commands.Update_User;
-using Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById;
-using Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList;
-using Rental_Project_2026.Application.UseCases.Vehicles.Commands.CreateVehicle;
-using Rental_Project_2026.Application.UseCases.Vehicles.Commands.DeleteVehicle;
-using Rental_Project_2026.Application.UseCases.Vehicles.Commands.UpdateVehicle;
-using Rental_Project_2026.Application.UseCases.Vehicles.Commands.ChangeStatusVehicle;
-using Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleById;
-using Rental_Project_2026.Application.UseCases.Vehicles.Queries.GetVehicleList;
 using Rental_Project_2026.Application.Utilities.Mediator;
-using Rental_Project_2026.Application.UseCases.Account.Commands.Login;
-using Rental_Project_2026.Application.UseCases.Account.Commands.Logout;
+
 
 namespace Rental_Project_2026.Application
 {

@@ -17,7 +17,11 @@ namespace Rental_Project_2026.Persistence.Extensions
                 .Take(request.PageSize)
                 .ToListAsync(cancellationToken);
 
-            return PaginationResponse<T>.Create(items, totalCount, request);
+            return new PaginationResponse<T>
+            {
+                Items = items,
+                TotalCount = totalCount
+            };
         }
     }
 }

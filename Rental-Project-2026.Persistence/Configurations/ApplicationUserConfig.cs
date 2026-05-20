@@ -11,13 +11,13 @@ namespace Rental_Project_2026.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
-            builder.Property(u => u.Firtsname)
+            builder.Property(u => u.FirstName)
                    .HasMaxLength(64)
                    .IsRequired();
 
-            builder .Property(u => u.Lastname)
-                    .HasMaxLength(64)
-                    .IsRequired();
+            builder.Property(u => u.LastName)
+                   .HasMaxLength(64)
+                   .IsRequired();
 
             builder.Property(u => u.RoleId)
                    .IsRequired();

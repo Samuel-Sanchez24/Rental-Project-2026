@@ -5,14 +5,13 @@ using Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser
 {
-    public class CreateUserCommand : IRequest<string>
+    public sealed class CreateUserCommand : IRequest<string>
     {
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        public string UserName { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string Phone { get; set; } = null!;
-        public UserRole Role { get; set; }
-        public UserStatus Status { get; set; }
+        public required string FirstName { get; set; }
+        public required string LastName { get; set; }
+        public required string Email { get; set; }
+        public required string Password { get; set; }
+        public string? PhoneNumber { get; set; }
+        public required Guid RoleId { get; set; }
     }
 }

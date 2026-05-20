@@ -29,7 +29,7 @@ namespace Rental_Project_2026.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                _notifyService.Error("Por favor corrija los errores en el formulario.");
+                _notifyService.Error("Debe corregir los errores de validación.");
                 return View(dto);
             }
 
@@ -39,10 +39,11 @@ namespace Rental_Project_2026.Web.Controllers
                 {
                     UserName = dto.Email,
                     Password = dto.Password,
-                    RememberMe = dto.RememberMe
+                    RememberMe = dto.RememberMe,
                 };
 
                 AccountSignInResult result = await _mediator.Send(command);
+
                 if (result.Succeeded)
                 {
                     _notifyService.Success("Inicio de sesión exitoso.");
@@ -55,16 +56,15 @@ namespace Rental_Project_2026.Web.Controllers
                     {
                         return RedirectToAction("Index", "Home");
                     }
-
                 }
 
                 if (result.IsLockedOut)
                 {
-                    _notifyService.Error("Tu cuenta ha sido bloqueada temporalmente. Por favor intenta nuevamente más tarde.");
+                    _notifyService.Error("Su cuenta ha sido bloqueada temporalmente debido a múltiples intentos fallidos de inicio de sesión. Por favor, inténtelo de nuevo más tarde.");
                     return View(dto);
                 }
 
-                _notifyService.Error("Credenciales inválidas. Por favor intenta nuevamente.");
+                _notifyService.Error("Usuario o contraseña incorrectos.");
                 return View(dto);
             }
             catch (Exception ex)
@@ -76,13 +76,12 @@ namespace Rental_Project_2026.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
+        public async Task<ActionResult> Logout()
         {
             try
             {
                 await _mediator.Send(new LogoutCommand());
-                _notifyService.Success("Has cerrado sesión exitosamente.");
+                _notifyService.Success("Cierre de sesión exitoso.");
                 return RedirectToAction("Login", "Account");
             }
             catch (Exception ex)
@@ -95,7 +94,7 @@ namespace Rental_Project_2026.Web.Controllers
         [HttpGet]
         public IActionResult AccessDenied()
         {
-            return View();
+            return View("Forbbiden");
         }
     }
 }

@@ -9,70 +9,65 @@ namespace Rental_Project_2026.Persistence.Repositories
 {
     public class AccountRepository : IAccountRepository
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUser> _signinManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly DataContext _context;
 
-        public AccountRepository(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, DataContext context)
+        public AccountRepository(SignInManager<ApplicationUser> signinManager, UserManager<ApplicationUser> userManager, DataContext context)
         {
-            _signInManager = signInManager;
+            _signinManager = signinManager;
             _userManager = userManager;
             _context = context;
         }
 
-        public async Task<UserAccountInfoDTO> GetUserInfoAsync(string UserId, CancellationToken cancellationToken = default)
+        public async Task<UserAccountInfoDTO> GetUserInfoAsync(string userId, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(UserId))
+            if (string.IsNullOrWhiteSpace(userId))
             {
-                return null!;
+                return null;
             }
 
             ApplicationUser? user = await _context.Users.Include(u => u.Role)
-                                                        .FirstOrDefaultAsync(u => u.Id == UserId);
+                                                        .FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user == null)
+            if (user is null)
             {
-                return null!;
+                return null;
             }
 
             return new UserAccountInfoDTO
             {
-                FirsName = user.Firtsname,
-                LastName = user.Lastname,
-                RoleName = user.Role.Name,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                RoleName = user.Role.Name
             };
         }
 
-        public Task<bool> HasPermissionAsync(string userId, string permissionCode)
+        public async Task<AccountSignInResult> SignInAsync(string userName, string password, bool rememberMe, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<AccountSignInResult> SignInAsync(string email, string password, bool rememberMe, CancellationToken cancellationToken = default)
-        {
-            ApplicationUser? user = await _userManager.FindByEmailAsync(email);
+            ApplicationUser? user = await _userManager.FindByNameAsync(userName);
 
             if (user is null)
             {
                 return new AccountSignInResult
                 {
                     Succeeded = false,
-                    IsLockedOut = false,
+                    IsLockedOut = false
                 };
             }
 
-            SignInResult result = await _signInManager.PasswordSignInAsync(user, password, rememberMe, lockoutOnFailure: true);
+            SignInResult result = await _signinManager.PasswordSignInAsync(user, password, rememberMe, lockoutOnFailure: true);
 
             return new AccountSignInResult
             {
                 Succeeded = result.Succeeded,
-                IsLockedOut = result.IsLockedOut,
+                IsLockedOut = result.IsLockedOut
             };
         }
 
         public Task SignOutAsync(CancellationToken cancellationToken = default)
         {
-            return _signInManager.SignOutAsync();
+            return _signinManager.SignOutAsync();
         }
 
         public async Task<bool> UserHasPermissionAsync(string userId, string permissionCode, CancellationToken cancellationToken = default)
@@ -90,7 +85,7 @@ namespace Rental_Project_2026.Persistence.Repositories
             }
 
             return await _context.Permissions.AnyAsync(p => p.Code == permissionCode
-                && p.RolePermissions.Any(rp => rp.RoleId == user.RoleId));
+                                                           && p.RolePermissions.Any(rp => rp.RoleId == user.RoleId));
         }
     }
 }

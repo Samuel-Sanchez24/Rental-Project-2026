@@ -1,30 +1,29 @@
 ﻿using Rental_Project_2026.Application.Contracts.Repositories;
+using Rental_Project_2026.Domain.Account;
+using Rental_Project_2026.Domain.Entities;
 using Rental_Project_2026.Domain.Exceptions;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser
 {
-    internal class DeleteUserUseCase : IRequestHandler<DeleteUserCommand>
+    public sealed class DeleteUserUseCase : IRequestHandler<DeleteUserCommand>
     {
         private readonly IUsersRepository _usersRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public DeleteUserUseCase(IUsersRepository usersRepository, IUnitOfWork unitOfWork)
+        public DeleteUserUseCase(IUsersRepository usersRepository)
         {
             _usersRepository = usersRepository;
-            _unitOfWork = unitOfWork;
         }
 
-        public async Task Handler(DeleteUserCommand command)
+        public async Task Handler(DeleteUserCommand request)
         {
-            var user = await _usersRepository.GetByIdAsync(command.Id);
-            if (user == null)
-            {
-                throw new BusinessRulesException($"El usuario con id: {command.Id} no existe");
-            }
-            user.Deactivate();
+            User? user = await _usersRepository.GetByIdAsync(request.Id);
 
-            await _usersRepository.UpdateAsync(user);
-            await _unitOfWork.CommitAsync();
+            if (user is null)
+            {
+                throw new BusinessRulesException("El usuario no existe.");  
+            }
+
+            await _usersRepository.DeleteAsync(request.Id);
         }
     }
 }
