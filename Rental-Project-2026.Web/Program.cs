@@ -59,9 +59,8 @@ app.UseSession();
 
 app.UseExeptionHandlerMiddleware();
 
-app.UseAuthorization();
-
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseNotyf();
 

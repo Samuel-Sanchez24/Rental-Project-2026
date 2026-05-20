@@ -26,6 +26,7 @@ namespace Rental_Project_2026.Persistence
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IVehiclesRepository, VehiclesRepository>();
             services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddScoped<IRolesRepository, RolesRepository>();
 
             services.AddTransient<SeedDb>();
 
