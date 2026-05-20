@@ -6,10 +6,10 @@ namespace Rental_Project_2026.Application.UseCases.Account.Queries.GetAccountUse
 {
     public class UserAccountInfoDTO
     {
-        public required string FirsName { get; set; }
+        public required string FirstName { get; set; }
         public required string LastName { get; set; }
         public required string RoleName { get; set; }
-        public string FullName => $"{FirsName} {LastName}";
+        public string FullName => $"{FirstName} {LastName}";
 
     }
 }

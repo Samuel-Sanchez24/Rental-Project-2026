@@ -16,7 +16,6 @@ namespace Rental_Project_2026.Persistence
 
         }
         public DbSet<Branch> Branches { get; set; }
-        public DbSet<User> SystemUsers { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Permission> Permissions { get; set; }

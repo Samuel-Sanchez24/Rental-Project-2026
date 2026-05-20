@@ -1,157 +1,102 @@
 ﻿using Rental_Project_2026.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace Rental_Project_2026.Domain.Account
 {
     public class User
     {
-        public string Id { get; set; } = null!;
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;  
-        public string UserName { get; set; } = null!;
-        public string Email { get; set; } = null!;
+
+        public string Id { get; set; }
+        public string FisrtName { get; set; }
+        public string LastName { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
-        public string Phone { get; set; } = null!;
-        public UserRole Role { get; set; }
-        public UserStatus Status { get; set; }
+        public string? Phone { get; set; }
         public Guid RoleId { get; set; }
 
-        
-        
-        private User() { }
-
-        public User(
-            string firstName,
-            string lastName,
-            string userName,
-            string email,
-            string phone,
-            UserRole role)
+        private User()
         {
-            ValidateNames(firstName, lastName);
-            ValidateUserName(userName);
-            ValidateEmail(email);
-            ValidatePhone(phone);
-            ValidateRole(role);
-
-            Id = Guid.CreateVersion7().ToString();
-            FirstName = firstName;
-            LastName = lastName;
-            UserName = userName;
-            Email = email;
-            EmailConfirmed = false;
-            Phone = phone;
-            Role = role;
-            Status = UserStatus.Active;
         }
 
-
-        public static User Reconstitute(
-            string id,
-            string firstName,
-            string lastName,
-            string userName,
-            string email,
-            bool emailConfirmed,
-            string phone,
-            UserRole role,
-            UserStatus status,
-            Guid RoleId
-            )
+        public static User Reconstitute(string id,
+                                        string firstName,
+                                        string lastName,
+                                        string userName,
+                                        string email,
+                                        bool emailConfirmed,
+                                        string? phone,
+                                        Guid roleId)
         {
-            ValidateId(id);
-            ValidateNames(firstName, lastName);
-            ValidateUserName(userName);
-            ValidateEmail(email);
-            ValidatePhone(phone);
-            ValidateRoleId(RoleId);
+            ValideteId(id);
+            ValideteNames(firstName, lastName);
+            ValideteEmail(email);
+            ValideteRoleId(roleId);
 
             return new User
             {
                 Id = id,
-                FirstName = firstName,
+                FisrtName = firstName,
                 LastName = lastName,
                 UserName = userName,
                 Email = email,
                 EmailConfirmed = emailConfirmed,
                 Phone = phone,
-                Role = role,
-                Status = status
+                RoleId = roleId,
             };
         }
 
-        private static void ValidateId(string Id)
+        private static void ValideteId(string id)
         {
-            if (string.IsNullOrWhiteSpace(Id))
+            if (string.IsNullOrWhiteSpace(id))
             {
-                throw new BusinessRulesException("El Id del usuario es requerido.");
+                throw new BusinessRulesException("El id es requerido");
             }
         }
 
-        private static void ValidateRoleId(Guid Id)
+        private static void ValideteRoleId(Guid id)
         {
-            if (Id == Guid.Empty)
-                throw new BusinessRulesException($"El Rol es requerido.");
+            if (id == Guid.Empty)
+            {
+                throw new BusinessRulesException("El rol es requerido");
+            }
         }
 
-        private static void ValidateNames(string firstName, string lastName)
+        private static void ValideteNames(string firstName, string lastName)
         {
-            if (string.IsNullOrWhiteSpace(firstName) || firstName.Length < 2 || firstName.Length > 50)
-                throw new BusinessRulesException($"El {nameof(firstName)} es requerido (2-50 caracteres).");
-            if (string.IsNullOrWhiteSpace(lastName) || lastName.Length < 2 || lastName.Length > 50)
-                throw new BusinessRulesException($"El {nameof(lastName)} es requerido (2-50 caracteres).");
+            if (string.IsNullOrWhiteSpace(firstName))
+            {
+                throw new BusinessRulesException("El nombre es requerido");
+            }
+
+            if (string.IsNullOrWhiteSpace(lastName))
+            {
+                throw new BusinessRulesException("El apellido es requerido");
+            }
+
+            if (firstName.Length > 64)
+            {
+                throw new BusinessRulesException("El nombre no puede tener más de 64 caracteres");
+            }
+
+            if (lastName.Length > 64)
+            {
+                throw new BusinessRulesException("El apellido no puede tener más de 64 caracteres");
+            }
         }
 
-        private static void ValidateEmail(string email)
+        private static void ValideteEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email) || email.Length < 5 || email.Length > 80 || !email.Contains("@"))
-                throw new BusinessRulesException($"El {nameof(email)} es requerido y debe ser un correo válido (5-80 caracteres).");
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                throw new BusinessRulesException("El correo electrónico es requerido");
+            }
+
+            // TODO: Validar el formato del correo electrónico
         }
-
-        private static void ValidateUserName(string userName)
-        {
-            if (string.IsNullOrWhiteSpace(userName) || userName.Length < 3 || userName.Length > 20)
-                throw new BusinessRulesException($"El {nameof(userName)} es requerido (3-20 caracteres).");
-        }
-
-        private static void ValidatePhone(string phone)
-        {
-            if (string.IsNullOrWhiteSpace(phone) || phone.Length < 7 || phone.Length > 12)
-                throw new BusinessRulesException($"El {nameof(phone)} debe tener entre 7 y 12 dígitos.");
-        }
-
-        private static void ValidateRole(UserRole role)
-        {
-            if (!Enum.IsDefined(typeof(UserRole), role))
-                throw new BusinessRulesException($"El {nameof(role)} no es válido.");
-        }
-
-        public void UpdateUser(
-            string firstName,
-            string lastName,
-            string userName,
-            string email,
-            string phone,
-            UserRole role)
-        {
-            ValidateNames(firstName, lastName);
-            ValidateUserName(userName);
-            ValidateEmail(email);
-            ValidatePhone(phone);
-            ValidateRole(role);
-
-            FirstName = firstName;
-            LastName = lastName;
-            UserName = userName;
-            Email = email;
-            Phone = phone;
-            Role = role;
-        }
-
-        public void Activate() => Status = UserStatus.Active;
-        public void Deactivate() => Status = UserStatus.Inactive;
 
     }
 }

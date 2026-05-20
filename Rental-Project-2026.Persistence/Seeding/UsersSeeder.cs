@@ -27,9 +27,9 @@ namespace Rental_Project_2026.Persistence.Seeding
 
         private async Task SeedUserAsync()
         {
-            await CheckUserAsync("adminuser@gmail.com", "Seed", "Admin", RolesCatalog.ADMIN);
-            await CheckUserAsync("basicuser@gmail.com", "Jhon", "Doe", RolesCatalog.CUSTOMER);
-            await CheckUserAsync("employeeuser@gmail.com", "Jane", "Smith", RolesCatalog.EMPLOYEE);
+            await CheckUsersAsync("adminuser@gmail.com", "Seed", "Admin", RolesCatalog.ADMIN);
+            await CheckUsersAsync("basicuser@gmail.com", "Jhon", "Doe", RolesCatalog.CUSTOMER);
+            await CheckUsersAsync("employeeuser@gmail.com", "Jane", "Smith", RolesCatalog.EMPLOYEE);
         }
 
         private async Task SeedRolesAsync()
@@ -54,15 +54,11 @@ namespace Rental_Project_2026.Persistence.Seeding
                 PermissionCodesCatalog.SHOW_VEHICLES,
 
             }); 
-        }    
+        }
 
-        public async Task CheckUserAsync(string email, string firstname, string LastName, string RoleName)
+        private async Task CheckUsersAsync(string email, string firstName, string lastName, string roleName)
         {
-            Role? role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == RoleName);
-            if (role == null)
-            {
-                throw new Exception($"El rol '{RoleName}' no existe.");
-            }
+            Role role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
 
             ApplicationUser? user = await _userManager.FindByEmailAsync(email);
 
@@ -73,16 +69,16 @@ namespace Rental_Project_2026.Persistence.Seeding
                     UserName = email,
                     Email = email,
                     EmailConfirmed = true,
-                    Firtsname = firstname,  
-                    Lastname = LastName,
+                    FirstName = firstName,
+                    LastName = lastName,
                     RoleId = role.Id
                 };
 
-                IdentityResult userCreated = await _userManager.CreateAsync(user, "123456");
+                await _userManager.CreateAsync(user, "1234");
             }
         }
 
-        private async Task CheckRolesAsync(string roleName, IReadOnlyList<string> permissionCodes)
+        private async Task CheckRolesAsync(string roleName, List<string> permissionCodes)
         {
             Role? role = await _context.Roles.FirstOrDefaultAsync(r => r.Name == roleName);
             if (role is null)
@@ -92,16 +88,17 @@ namespace Rental_Project_2026.Persistence.Seeding
                 await _context.SaveChangesAsync();
             }
 
-            List<Guid> permissionIds = await _context.Permissions.Where(p => permissionCodes.Contains (p.Code))
+            List<Guid> permissionIds = await _context.Permissions.Where(p => permissionCodes.Contains(p.Code))
                                                                  .Select(p => p.Id)
                                                                  .ToListAsync();
 
-            List<Guid> existingPermissionIds = await _context.RolePermissions.Where(rp => rp.RoleId == role.Id)
-                                                                             .Select(rp => rp.PermissionId)
-                                                                             .ToListAsync();
+            List<Guid> existingPermissionIds = await _context.RolePermissions
+                                                             .Where(rp => rp.RoleId == role.Id)
+                                                             .Select(rp => rp.PermissionId)
+                                                             .ToListAsync();
 
             List<Guid> toAdd = permissionIds.Except(existingPermissionIds)
-                .ToList();
+                                            .ToList();
 
             foreach (Guid permissionId in toAdd)
             {
@@ -110,6 +107,6 @@ namespace Rental_Project_2026.Persistence.Seeding
             }
 
             await _context.SaveChangesAsync();
-        }   
+        }
     }
 }

@@ -6,37 +6,25 @@ namespace Rental_Project_2026.Web.DTOs.Users
     public class CreateUserDTO
     {
         [Required(ErrorMessage = "El nombre es obligatorio.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "El nombre debe tener entre 2 y 50 caracteres.")]
-        [Display(Name = "Nombre")]
-        public string FirstName { get; set; } = null!;
+        [StringLength(64, MinimumLength = 2)]
+        [Display(Name = "Nombres")]
+        public string FirstName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El apellido es obligatorio.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "El apellido debe tener entre 2 y 50 caracteres.")]
-        [Display(Name = "Apellido")]
-        public string LastName { get; set; } = null!;
-
-        [Required(ErrorMessage = "El nombre de usuario es obligatorio.")]
-        [StringLength(50, MinimumLength = 2, ErrorMessage = "El nombre de usuario debe tener entre 2 y 50 caracteres.")]
-        [Display(Name = "Apellido")]
-        public string UserName { get; set; } = null!;
+        [StringLength(64, MinimumLength = 2)]
+        [Display(Name = "Apellidos")]
+        public string LastName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El correo es obligatorio.")]
-        [EmailAddress(ErrorMessage = "Debe ingresar un correo válido.")]
-        [StringLength(100, ErrorMessage = "El correo no puede superar los 100 caracteres.")]
+        [EmailAddress(ErrorMessage = "El correo no es válido.")]
         [Display(Name = "Correo electrónico")]
-        public string Email { get; set; } = null!;
+        public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "El teléfono es obligatorio.")]
-        [StringLength(12, MinimumLength = 7, ErrorMessage = "El teléfono debe tener entre 7 y 12 caracteres.")]
         [Display(Name = "Teléfono")]
-        public string Phone { get; set; } = null!;
+        public string? Phone { get; set; }
 
         [Required(ErrorMessage = "El rol es obligatorio.")]
         [Display(Name = "Rol")]
-        public UserRole Role { get; set; }
-
-        [Required(ErrorMessage = "El estado es obligatorio.")]
-        [Display(Name = "Estado")]
-        public UserStatus Status { get; set; }
+        public Guid RoleId { get; set; }
     }
 }

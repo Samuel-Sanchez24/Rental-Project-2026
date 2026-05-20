@@ -61,6 +61,8 @@ app.UseExeptionHandlerMiddleware();
 
 app.UseAuthorization();
 
+app.UseAuthentication();
+
 app.UseNotyf();
 
 app.MapControllerRoute(

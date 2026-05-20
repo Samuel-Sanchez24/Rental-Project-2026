@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser
 {
-    public class DeleteUserCommand : IRequest
+    public sealed class DeleteUserCommand : IRequest
     {
-        public string Id { get; set; } = null!;
+        public required string Id { get; set; }
     }
 }

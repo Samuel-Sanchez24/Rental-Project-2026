@@ -8,13 +8,12 @@ namespace Rental_Project_2026.Application.Contracts.Repositories
 {
     public interface IAccountRepository
     {
-        Task<AccountSignInResult> SignInAsync(string userName, string password, bool rememberMe,CancellationToken cancellationToken = default);
-        
+        Task<AccountSignInResult> SignInAsync(string userName, string password, bool rememberMe, CancellationToken cancellationToken = default);
+
         Task SignOutAsync(CancellationToken cancellationToken = default);
 
-        Task<UserAccountInfoDTO> GetUserInfoAsync(string UserId, CancellationToken cancellationToken = default);
-        
-        Task<bool> UserHasPermissionAsync(String userId,string permissionCode, CancellationToken cancellationToken = default);
-        Task<bool> HasPermissionAsync(string userId, string permissionCode);
+        Task<UserAccountInfoDTO> GetUserInfoAsync(string userId, CancellationToken cancellationToken = default);
+
+        Task<bool> UserHasPermissionAsync(string userId, string permissionCode, CancellationToken cancellationToken = default);
     }
 }

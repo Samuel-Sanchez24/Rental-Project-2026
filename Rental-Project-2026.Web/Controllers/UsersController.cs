@@ -1,189 +1,204 @@
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Rental_Project_2026.Application.Contracts.Pagination;
+using Rental_Project_2026.Application.Contracts.Security;
 using Rental_Project_2026.Application.UseCases.Users.Commands.CreateUser;
-using Rental_Project_2026.Application.UseCases.Users.Commands.ToggleUserStatus;
+using Rental_Project_2026.Application.UseCases.Users.Commands.DeleteUser;
 using Rental_Project_2026.Application.UseCases.Users.Commands.Update_User;
+using Rental_Project_2026.Application.UseCases.Users.Commands.UpdateUser;
+using Rental_Project_2026.Application.UseCases.Users.Queries.GetRoleOptions;
 using Rental_Project_2026.Application.UseCases.Users.Queries.GetUserById;
 using Rental_Project_2026.Application.UseCases.Users.Queries.GetUsersList;
 using Rental_Project_2026.Domain.Entities;
 using Rental_Project_2026.Web.DTOs.Users;
+using Rental_Project_2026.Web.Security;
 
 namespace Rental_Project_2026.Web.Controllers
 {
     public class UsersController : Controller
     {
-        private readonly INotyfService _notyfService;
+        private readonly INotyfService _notifyService;
         private readonly IMediator _mediator;
 
-        public UsersController(INotyfService notyfService, IMediator mediator)
+        public UsersController(INotyfService notifyService, IMediator mediator)
         {
-            _notyfService = notyfService;
+            _notifyService = notifyService;
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index(
-            int page = 1,
-            int pageSize = PaginationRequest.DEFAULT_PAGE_SIZE,
-            string? nameFilter = null,
-            string? emailFilter = null,
-            UserRole? roleFilter = null,
-            UserStatus? statusFilter = null)
+        [HttpGet]
+        [RequirePermission(PermissionCodesCatalog.SHOW_USERS)]
+        public async Task<IActionResult> Index([FromQuery] int page = 1,
+                                   [FromQuery] int pageSize = PaginationRequest.DEFAULT_PAGE_SIZE,
+                                   [FromQuery] string? nameFilter = null,
+                                   [FromQuery] Guid? roleIdFilter = null)
         {
             try
             {
-                PaginationRequest pagination = new PaginationRequest(page, pageSize);
+                PaginationRequest paginationRequest = new PaginationRequest(page, pageSize);
 
                 GetUsersListQuery query = new GetUsersListQuery
                 {
-                    Pagination = pagination,
+                    Pagination = paginationRequest,
                     NameFilter = nameFilter,
-                    EmailFilter = emailFilter,
-                    RoleFilter = roleFilter,
-                    StatusFilter = statusFilter
+                    RoleIdFilter = roleIdFilter,
                 };
 
-                PaginationResponse<UserListItemDTO> response = await _mediator.Send(query);
+                PaginationResponse<UserListItemDTO> list = await _mediator.Send(query);
+                IReadOnlyList<RoleOptionDTO> roles = await _mediator.Send(new GetRoleOptionsQuery());
 
                 UsersIndexViewModel viewModel = new UsersIndexViewModel
                 {
-                    List = response,
+                    List = list,
                     FilterName = nameFilter ?? string.Empty,
-                    FilterEmail = emailFilter ?? string.Empty,
-                    FilterRole = roleFilter,
-                    FilterStatus = statusFilter
+                    FilterRoleId = roleIdFilter,
+                    Roles = roles,
                 };
 
                 return View(viewModel);
             }
             catch (Exception ex)
             {
-                _notyfService.Error($"Error al cargar los usuarios: {ex.Message}");
-
-                UsersIndexViewModel viewModel = new UsersIndexViewModel
+                _notifyService.Error($"Error al cargar los usuarios: {ex.Message}");
+                return View(new UsersIndexViewModel
                 {
-                    List = PaginationResponse<UserListItemDTO>.Create(
-                        new List<UserListItemDTO>(),
-                        0,
-                        new PaginationRequest(page, pageSize)),
-                    FilterName = nameFilter ?? string.Empty,
-                    FilterEmail = emailFilter ?? string.Empty,
-                    FilterRole = roleFilter,
-                    FilterStatus = statusFilter
-                };
-
-                return View(viewModel);
+                    List = PaginationResponse<UserListItemDTO>.Create([], 0, new PaginationRequest(1, pageSize)),
+                    Roles = [],
+                });
             }
         }
 
         [HttpGet]
-        public IActionResult Create()
+        [RequirePermission(PermissionCodesCatalog.CREATE_USERS)]
+        public async Task<IActionResult> Create()
         {
+            await LoadRolesSelectListAsync();
             return View();
         }
 
         [HttpPost]
+        [RequirePermission(PermissionCodesCatalog.CREATE_USERS)]
         public async Task<IActionResult> Create(CreateUserDTO dto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    _notyfService.Error("Debe corregir los errores de validacion");
+                    _notifyService.Error("Debe corregir los errores de validación.");
+                    await LoadRolesSelectListAsync();
                     return View(dto);
                 }
+
                 CreateUserCommand command = new CreateUserCommand
                 {
                     FirstName = dto.FirstName,
                     LastName = dto.LastName,
-                    UserName = dto.UserName,
                     Email = dto.Email,
-                    Phone = dto.Phone,
-                    Role = dto.Role,
-                    Status = dto.Status
+                    Password = "1234",
+                    PhoneNumber = dto.Phone,
+                    RoleId = dto.RoleId,
                 };
+
                 await _mediator.Send(command);
-                _notyfService.Success("Usuario creado exitosamente");
-                return RedirectToAction(nameof(Index));
+                _notifyService.Success("Usuario creado exitosamente.");
             }
             catch (Exception ex)
             {
-                _notyfService.Error($"Error al crear el usuario: {ex.Message}");
+                _notifyService.Error($"Error al crear el usuario: {ex.Message}");
+                await LoadRolesSelectListAsync();
                 return View(dto);
             }
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
+        [RequirePermission(PermissionCodesCatalog.EDIT_USERS)]
         public async Task<IActionResult> Edit([FromRoute] string id)
         {
             try
             {
-                UserDetailDTO user = await _mediator.Send(new GetUserByIdQuery(id));
+                UserDetailDTO user = await _mediator.Send(new GetUserByIdQuery { Id = id });
+
                 EditUserDTO editDto = new EditUserDTO
                 {
                     Id = user.Id,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
-                    UserName = user.UserName,
                     Email = user.Email,
                     Phone = user.Phone,
-                    Role = user.Role,
-                    Status = user.Status
+                    RoleId = user.RoleId,
                 };
+
+                await LoadRolesSelectListAsync();
                 return View(editDto);
             }
             catch (Exception ex)
             {
-                _notyfService.Error($"Error al cargar el usuario: {ex.Message}");
+                _notifyService.Error($"Error al cargar el usuario: {ex.Message}");
                 return RedirectToAction(nameof(Index));
             }
         }
 
         [HttpPost]
+        [RequirePermission(PermissionCodesCatalog.EDIT_USERS)]
         public async Task<IActionResult> Edit(EditUserDTO dto)
         {
             try
             {
                 if (!ModelState.IsValid)
                 {
-                    _notyfService.Error("Debe corregir los errores de validacion");
+                    _notifyService.Error("Debe corregir los errores de validación.");
+                    await LoadRolesSelectListAsync();
                     return View(dto);
                 }
+
                 UpdateUserCommand command = new UpdateUserCommand
                 {
                     Id = dto.Id,
                     FirstName = dto.FirstName,
                     LastName = dto.LastName,
-                    UserName = dto.UserName,
                     Email = dto.Email,
                     Phone = dto.Phone,
-                    Role = dto.Role,
-                    Status = dto.Status
+                    Role = dto.RoleId,
                 };
-                await _mediator.Send(command);
-                _notyfService.Success("Usuario actualizado exitosamente");
 
+                await _mediator.Send(command);
+                _notifyService.Success("Usuario actualizado exitosamente.");
             }
             catch (Exception ex)
             {
-                _notyfService.Error($"Error al actualizar el usuario: {ex.Message}");
+                _notifyService.Error($"Error al actualizar el usuario: {ex.Message}");
+                await LoadRolesSelectListAsync();
                 return View(dto);
             }
+
             return RedirectToAction(nameof(Index));
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> ToggleStatus(string id)  
+        [RequirePermission(PermissionCodesCatalog.DELETE_USERS)]
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
             try
             {
-                await _mediator.Send(new ToggleUserStatusCommand { Id = id });
-                return Json(new { success = true });
+                await _mediator.Send(new DeleteUserCommand { Id = id });
+                _notifyService.Success("Usuario eliminado exitosamente.");
             }
             catch (Exception ex)
             {
-                return Json(new { success = false, message = ex.Message });
+                _notifyService.Error($"Error al eliminar el usuario: {ex.Message}");
             }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        private async Task LoadRolesSelectListAsync()
+        {
+            IReadOnlyList<RoleOptionDTO> roles = await _mediator.Send(new GetRoleOptionsQuery());
+            ViewBag.Roles = new SelectList(roles, nameof(RoleOptionDTO.Id), nameof(RoleOptionDTO.Name));
         }
     }
 }
