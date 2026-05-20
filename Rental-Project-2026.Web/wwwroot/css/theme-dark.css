@@ -870,3 +870,133 @@ body.theme-dark .access-denied-actions,
             background: #1d4ed8;
             border-color: #1d4ed8;
         }
+
+/* ================================
+   USERS TABLE  
+================================ */
+
+.dashboard .card .table.table-bordered {
+    width: 100%;
+    margin-bottom: 0;
+    color: #e5edff !important;
+    background-color: #071225 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    border: 1px solid rgba(59, 130, 246, 0.22) !important;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+    .dashboard .card .table.table-bordered thead tr {
+        background: linear-gradient(135deg, #0f1b2f, #10284a) !important;
+    }
+
+    .dashboard .card .table.table-bordered thead th {
+        background: transparent !important;
+        color: #f8fafc !important;
+        border-color: rgba(148, 163, 184, 0.18) !important;
+        font-weight: 700;
+        padding: 15px 16px;
+        font-size: 0.95rem;
+    }
+
+    .dashboard .card .table.table-bordered tbody tr {
+        background-color: #08162b !important;
+        transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+        .dashboard .card .table.table-bordered tbody tr:nth-child(even) {
+            background-color: #0a1b33 !important;
+        }
+
+        .dashboard .card .table.table-bordered tbody tr:hover {
+            background-color: #10294b !important;
+        }
+
+    .dashboard .card .table.table-bordered tbody td {
+        background-color: transparent !important;
+        color: #dbeafe !important;
+        border-color: rgba(148, 163, 184, 0.14) !important;
+        padding: 14px 16px;
+        vertical-align: middle;
+    }
+
+        .dashboard .card .table.table-bordered tbody td:nth-child(1) {
+            color: #f8fafc !important;
+            font-weight: 600;
+        }
+
+        .dashboard .card .table.table-bordered tbody td:nth-child(2) {
+            color: #bfdbfe !important;
+        }
+
+        .dashboard .card .table.table-bordered tbody td:nth-child(3) {
+            color: #93c5fd !important;
+            font-weight: 600;
+        }
+
+    /* Elimina fondos blancos que Bootstrap mete por variables */
+    .dashboard .card .table.table-bordered > :not(caption) > * > * {
+        background-color: transparent !important;
+        box-shadow: none !important;
+    }
+
+    /* Columna de acciones */
+    .dashboard .card .table.table-bordered tbody td:last-child {
+        white-space: nowrap;
+    }
+
+    /* Botón editar */
+    .dashboard .card .table.table-bordered .btn-warning {
+        background: #f59e0b !important;
+        border-color: #f59e0b !important;
+        color: #06111f !important;
+        font-weight: 700;
+    }
+
+    /* Botón eliminar */
+    .dashboard .card .table.table-bordered .btn-danger {
+        background: #e11d48 !important;
+        border-color: #e11d48 !important;
+        color: #ffffff !important;
+        font-weight: 700;
+    }
+
+    /* Botones de acción dentro de la tabla */
+    .dashboard .card .table.table-bordered .btn-sm {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin-right: 4px;
+    }
+
+        .dashboard .card .table.table-bordered .btn-sm:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.08);
+        }
+
+/* ================================
+   PAGINACIÓN - AUTORENT DARK
+================================ */
+
+.dashboard .pagination .page-link {
+    background-color: #08162b !important;
+    border-color: rgba(59, 130, 246, 0.25) !important;
+    color: #bfdbfe !important;
+    font-weight: 600;
+}
+
+    .dashboard .pagination .page-link:hover {
+        background-color: #12345f !important;
+        color: #ffffff !important;
+    }
+
+.dashboard .pagination .page-item.disabled .page-link {
+    background-color: #050c1a !important;
+    color: #64748b !important;
+    border-color: rgba(148, 163, 184, 0.12) !important;
+}

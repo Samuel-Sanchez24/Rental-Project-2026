@@ -94,7 +94,7 @@ namespace Rental_Project_2026.Web.Controllers
         [HttpGet]
         public IActionResult AccessDenied()
         {
-            return View("Forbbiden");
+            return View();
         }
     }
 }

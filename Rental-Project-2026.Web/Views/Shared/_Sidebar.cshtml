@@ -22,7 +22,9 @@
             }))
         {
             <li class="nav-item">
-                <a class="nav-link @(controller == "Branches" ? "" : "collapsed") asp-controller="Branches" asp-action="Index">
+                <a class="nav-link @(controller == "Branches" ? "" : "collapsed")"
+                       asp-controller="Branches"
+                       asp-action="Index">
                     <i class="bi bi-geo-alt"></i>
                     <span>Explora nuestras sucursales</span>
                 </a>
@@ -36,7 +38,9 @@
             }))
         {
             <li class="nav-item">
-                <a class="nav-link @(controller == "Users" ? "" : "collapsed") asp-controller="Users" asp-action="Index">
+                <a class="nav-link @(controller == "Users" ? "" : "collapsed")"
+                       asp-controller="Users"
+                       asp-action="Index">
                     <i class="bi bi-people"></i>
                     <span>Usuarios</span>
                 </a>
@@ -50,7 +54,9 @@
             }))
         {
             <li class="nav-item">
-                <a class="nav-link @(controller == "Vehicles" ? "" : "collapsed") asp-controller="Vehicles" asp-action="Index">
+                <a class="nav-link @(controller == "Vehicles" ? "" : "collapsed")"
+                       asp-controller="Vehicles"
+                       asp-action="Index">
                     <i class="bi bi-car-front"></i>
                     <span>Vehículos</span>
                 </a>

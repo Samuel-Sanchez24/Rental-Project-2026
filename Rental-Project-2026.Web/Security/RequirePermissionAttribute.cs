@@ -33,7 +33,7 @@ namespace Rental_Project_2026.Web.Security
                     new RouteValueDictionary
                     {
                         ["controller"] = "Account",
-                        ["action"] = "Login",
+                        ["action"] = "AccessDenied",
                         ["returnUrl"] = httpContext.Request.Path
 
                     });
@@ -42,9 +42,13 @@ namespace Rental_Project_2026.Web.Security
             }
 
             string? userId = httpContext.User.FindFirstValue (ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId)) 
-            { 
-                context.Result = new ForbidResult();
+            if (string.IsNullOrEmpty(userId))
+            {
+                context.Result = new RedirectToActionResult(
+                    "AccessDenied",
+                    "Account",
+                    null
+                );
                 return;
             }
 
@@ -56,7 +60,15 @@ namespace Rental_Project_2026.Web.Security
             });
             if (!hasPermission)
             {
-                context.Result = new ForbidResult();
+                context.Result = new RedirectToRouteResult(
+                    new RouteValueDictionary
+                    {
+                        ["controller"] = "Account",
+                        ["action"] = "AccessDenied",
+                        ["returnUrl"] = httpContext.Request.Path
+                    });
+
+                return;
             }
         }
     }

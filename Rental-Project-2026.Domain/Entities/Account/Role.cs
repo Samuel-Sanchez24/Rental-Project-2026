@@ -22,6 +22,28 @@ namespace Rental_Project_2026.Domain.Entities.Account
             Name = name;
         }
 
+        public void UpdateName(string name)
+        {
+            CheckNameValidation(name);
+            Name = name;
+        }
+
+        private void CheckNameValidation(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new BusinessRulesException("El nombre del rol es requerido.");
+            }
+            if(name.Length > 64)
+            {
+                throw new BusinessRulesException("El nombre del rol no puede exceder los 64 caracteres.");
+            }
+            if (name.Length < 3)
+            {
+                throw new BusinessRulesException("El nombre del rol no puede tener menos de 3 caracteres.");
+            }
+        }
+
         public sealed class Permission
         {
             public Guid Id { get; private set; } 
