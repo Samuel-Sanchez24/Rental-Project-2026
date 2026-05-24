@@ -153,16 +153,32 @@
                                     </form>
                                 }
 
+                                @if (await Mediator.Send(new UserHasPermissionQuery
+                                {
+                                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                    PermissionCode = PermissionCodesCatalog.EDIT_BRANCHES
+                                }))
+                                {
+                                    <a asp-action="Edit"
+                                       asp-route-id="@item.Id"
+                                       class="btn btn-sm btn-link">
+                                        <i class="bi bi-pencil-fill text-warning fs-4"></i>
+                                    </a>
+                                }
 
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-link">
-                                    <i class="bi bi-pencil-fill text-warning fs-4"></i>
-                                </a>
+                                @if (await Mediator.Send(new UserHasPermissionQuery
+                                {
+                                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                    PermissionCode = PermissionCodesCatalog.DELETE_BRANCHES
+                                }))
+                                {
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="formDeleteBranch" style="display: contents">
+                                        <button type="button" class="btn btn-sm btn-link" onclick="confirmDeleteBranch(this)">
+                                            <i class="bi bi-trash text-danger fs-4"></i>
+                                        </button>
+                                    </form>
+                                }
 
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="formDeleteBranch" style="display: contents">
-                                    <button type="button" class="btn btn-sm btn-link" onclick="confirmDeleteBranch(this)">
-                                        <i class="bi bi-trash text-danger fs-4"></i>
-                                    </button>
-                                </form>
                             </td>
                         </tr>
                     }   

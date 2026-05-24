@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Roles.Commands.DeleteRole
 {
-    internal class DeleteRoleCommand : IRequest
+    public sealed class DeleteRoleCommand : IRequest
     {
         public required Guid Id { get; set; }
     }

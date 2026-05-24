@@ -57,7 +57,7 @@ app.UseRouting();
 
 app.UseSession();
 
-app.UseExeptionHandlerMiddleware();
+app.UseExceptionHandlerMiddleware();
 
 app.UseAuthentication();
 app.UseAuthorization();
