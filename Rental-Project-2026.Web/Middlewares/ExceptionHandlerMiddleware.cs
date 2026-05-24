@@ -5,7 +5,8 @@ namespace Rental_Project_2026.Web.Middlewares
 {
     public class ExceptionHandlerMiddleware
     {
-        public const string ERROR_MESSAGE_SESSION_KEY = "ErrorMessage"; 
+        public const string ERROR_MESSAGE_SESSION_KEY = "ErrorMessage";
+
         private readonly RequestDelegate _next;
 
         public ExceptionHandlerMiddleware(RequestDelegate next)
@@ -21,30 +22,27 @@ namespace Rental_Project_2026.Web.Middlewares
             }
             catch (Exception ex)
             {
-                string path = context.Request.Path.Value?.ToLower() ?? "";
-
-                if (path.StartsWith("/home/error"))
-                {
-                    throw;
-                }
-
                 string message = "Ha ocurrido un error";
 
                 switch (ex)
                 {
-                    case BusinessRulesException rulesException:
-                        message = rulesException.Message;
+                    case BusinessRulesException rule:
+
+                        message = rule.Message;
                         break;
 
-                    case MediatorException mediatorException:
-                        message = mediatorException.Message;
+                    case MediatorException mediatorEx:
+
+                        message = mediatorEx.Message;
                         break;
 
                     case CustomValidationException validationEx when validationEx.Errors.Count > 0:
-                        message = string.Join("; ", validationEx.Errors);
+
+                        message = string.Join(" ", validationEx.Errors);
                         break;
 
                     case CustomValidationException validationEx:
+
                         message = validationEx.Message;
                         break;
                 }
@@ -57,11 +55,11 @@ namespace Rental_Project_2026.Web.Middlewares
         }
     }
 
-    public static class ExeptionHandlerMiddlewareExtensions
+    public static class ExceptionHandlerMiddlewareExtensions
     {
-        public static IApplicationBuilder UseExeptionHandlerMiddleware(this IApplicationBuilder builder)
+        public static IApplicationBuilder UseExceptionHandlerMiddleware(this IApplicationBuilder builder)
         {
             return builder.UseMiddleware<ExceptionHandlerMiddleware>();
         }
-    }   
+    }
 }

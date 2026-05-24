@@ -1,0 +1,76 @@
+﻿@model EditRoleDTO
+
+@{
+    ViewData["Title"] = "Editar Rol";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/theme-dark.css" asp-append-version="true" />
+}
+
+<div class="pagetitle">
+    <h1>@ViewData["Title"]</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" asp-controller="Home">Inicio</a></li>
+            <li class="breadcrumb-item"><a asp-action="Index">Roles</a></li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section dashboard">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="m-0 font-weight-bold text-primary">
+                @ViewData["Title"]
+            </h3>
+        </div>
+        <div class="card-body mt-3">
+
+            <form asp-action="Edit" method="POST">
+
+                <input type="hidden" asp-for="Id" />
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <div class="col-md-6">
+                            <label asp-for="Name" class="form-label">
+                                Nombre del Rol
+                            </label>
+
+                            <input asp-for="Name" class="form-control" />
+
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Permisos</h5>
+                    </div>
+                    <div class="card-body">
+                        @await Html.PartialAsync("_Permissions", Model)
+                    </div>
+                </div>
+
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Guardar
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Volver
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
