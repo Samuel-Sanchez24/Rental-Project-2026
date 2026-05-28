@@ -24,6 +24,7 @@ namespace Rental_Project_2026.Application
                                       .AsImplementedInterfaces()
                                       .WithScopedLifetime()
             );
+            return services;
 
             //// Branches Services UseCases
             //services.AddScoped<IRequestHandler<CreateBranchCommand, Guid>, CreateBranchUseCase>();
@@ -57,11 +58,6 @@ namespace Rental_Project_2026.Application
             //services.AddScoped<IRequestHandler<ChangeStatusVehicleCommand, Guid>, ChangeStatusVehicleUseCase>();
             ////Vehicles Validators
             //services.AddValidatorsFromAssemblyContaining<CreateVehicleCommandValidator>();
-
-
-
-
-            return services;
         }
     }
 }

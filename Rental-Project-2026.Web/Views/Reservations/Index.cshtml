@@ -1,0 +1,270 @@
+﻿@model Rental_Project_2026.Web.DTOs.Reservations.ReservationIndexViewModel
+@using Rental_Project_2026.Domain.Enums
+
+@{
+    ViewData["Title"] = "Mis reservas";
+}
+
+<link rel="stylesheet" href="~/css/theme-dark.css" />
+
+<div class="pagetitle">
+    <h1>Mis reservas</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+            </li>
+            <li class="breadcrumb-item active">Reservas</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="card">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h5 class="card-title mb-0">Listado de reservas</h5>
+                    <small class="text-title mb-0">Consulta el estado de tus reservas realizadas.</small>
+                </div>
+
+                <a asp-controller="Vehicles" asp-action="Index" class="btn btn-primary">
+                    Rentar un vehículo
+                </a>
+            </div>
+
+            <form asp-action="Index" method="get" class="row g-3 mb-4">
+                <div class="col-md-3">
+                    <label class="form-label">Estado</label>
+                    <select name="statusFilter" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="@ReservationStatus.Pending" selected="@(Model.StatusFilter == ReservationStatus.Pending)">
+                            Pendiente de pago
+                        </option>
+                        <option value="@ReservationStatus.Confirmed" selected="@(Model.StatusFilter == ReservationStatus.Confirmed)">
+                            Confirmada
+                        </option>
+                        <option value="@ReservationStatus.Cancelled" selected="@(Model.StatusFilter == ReservationStatus.Cancelled)">
+                            Cancelada
+                        </option>
+                        <option value="@ReservationStatus.Finished" selected="@(Model.StatusFilter == ReservationStatus.Finished)">
+                            Finalizada
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Desde</label>
+                    <input type="date"
+                           name="rentDateFromFilter"
+                           class="form-control"
+                           value="@(Model.RentDateFromFilter?.ToString("yyyy-MM-dd"))" />
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label">Hasta</label>
+                    <input type="date"
+                           name="rentDateToFilter"
+                           class="form-control"
+                           value="@(Model.RentDateToFilter?.ToString("yyyy-MM-dd"))" />
+                </div>
+
+                <div class="col-md-3 d-flex align-items-end gap-2">
+                    <button type="submit" class="btn btn-outline-primary">
+                        Filtrar
+                    </button>
+
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+
+            @if (Model.List.Items.Any())
+            {
+                <div class="reservation-table-wrapper">
+                    <table class="table reservation-table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Vehículo</th>
+                                <th>Sucursal</th>
+                                <th>Fecha renta</th>
+                                <th>Fecha devolución</th>
+                                <th>Días</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model.List.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            @if (!string.IsNullOrWhiteSpace(item.VehicleImageUrl))
+                                            {
+                                                <img src="@item.VehicleImageUrl"
+                                                     alt="@item.VehicleBrand @item.VehicleModel"
+                                                     class="reservation-vehicle-img" />
+                                            }
+
+                                            <div>
+                                                <strong>@item.VehicleBrand @item.VehicleModel</strong>
+                                                <br />
+                                                <small class="text-muted">@item.VehiclePlate</small>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <strong>@item.BranchName</strong>
+                                        <br />
+                                        <small class="text-muted">@item.BranchCity</small>
+                                    </td>
+
+                                    <td>@item.RentDate.ToString("dd/MM/yyyy")</td>
+
+                                    <td>@item.ReturnDate.ToString("dd/MM/yyyy")</td>
+
+                                    <td>@item.Days</td>
+
+                                    <td>@item.TotalPrice.ToString("C0")</td>
+
+                                    <td>
+                                        @switch (item.Status)
+                                        {
+                                            case ReservationStatus.Pending:
+                                                <span class="badge-reservation-pending">Pendiente de pago</span>
+                                                break;
+
+                                            case ReservationStatus.Confirmed:
+                                                <span class="badge-reservation-confirmed">Confirmada</span>
+                                                break;
+
+                                            case ReservationStatus.Cancelled:
+                                                <span class="badge-reservation-cancelled">Cancelada</span>
+                                                break;
+
+                                            case ReservationStatus.Finished:
+                                                <span class="badge-resevation-finished">Finalizada</span>
+                                                break;
+                                        }
+                                    </td>
+
+                                    <td class="text-end">
+                                        <div class="reservation-actions">
+                                            <a asp-action="Details"
+                                                   asp-route-id="@item.Id"
+                                                   class="btn btn-sm btn-reservation-detail">
+                                                Detalle
+                                            </a>
+
+                                            @if (item.Status == ReservationStatus.Pending)
+                                            {
+                                                <a asp-action="Edit"
+                                                       asp-route-id="@item.Id"
+                                                       class="btn btn-sm btn-reservation-edit">
+                                                    Editar
+                                                </a>
+
+                                                <form asp-action="Delete"
+                                                      asp-route-id="@item.Id"
+                                                      method="post"
+                                                      class="formCancelReservation d-inline">
+                                                    @Html.AntiForgeryToken()
+
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-reservation-cancel"
+                                                            onclick="confirmCancelReservation(this)">
+                                                        Cancelar
+                                                    </button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    @if (Model.List.HasPreviousPage)
+                    {
+                        <a asp-action="Index"
+                               asp-route-page="@(Model.List.PageNumber - 1)"
+                               asp-route-pageSize="@Model.List.PageSize"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               asp-route-rentDateFromFilter="@(Model.RentDateFromFilter?.ToString("yyyy-MM-dd"))"
+                               asp-route-rentDateToFilter="@(Model.RentDateToFilter?.ToString("yyyy-MM-dd"))"
+                               class="btn btn-outline-primary">
+                            Anterior
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-outline-secondary" disabled>
+                            Anterior
+                        </button>
+                    }
+
+                    <span class="fw-semibold">
+                        Página @Model.List.PageNumber / @Model.List.TotalPages
+                    </span>
+
+                    @if (Model.List.HasNextPage)
+                    {
+                        <a asp-action="Index"
+                               asp-route-page="@(Model.List.PageNumber + 1)"
+                               asp-route-pageSize="@Model.List.PageSize"
+                               asp-route-statusFilter="@Model.StatusFilter"
+                               asp-route-rentDateFromFilter="@(Model.RentDateFromFilter?.ToString("yyyy-MM-dd"))"
+                               asp-route-rentDateToFilter="@(Model.RentDateToFilter?.ToString("yyyy-MM-dd"))"
+                               class="btn btn-outline-primary">
+                            Siguiente
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-outline-secondary" disabled>
+                            Siguiente
+                        </button>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info mb-0">
+                    Aún no tienes reservas registradas.
+                </div>
+            }
+
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        function confirmCancelReservation(button) {
+            Swal.fire({
+                icon: "question",
+                title: "¿Desea cancelar la reserva?",
+                text: "La reserva cambiará a estado cancelada.",
+                showCancelButton: true,
+                confirmButtonText: "Sí, cancelar",
+                cancelButtonText: "Volver",
+                background: "#0b1e33",
+                color: "#ffffff",
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    button.closest("form").submit();
+                }
+            });
+        }
+    </script>
+}

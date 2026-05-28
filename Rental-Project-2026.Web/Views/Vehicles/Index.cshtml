@@ -1,5 +1,6 @@
 ﻿@model Rental_Project_2026.Web.DTOs.Vehicles.VehicleIndexViewModel
 @using Rental_Project_2026.Domain.Enums
+@inject IMediator Mediator  
 
 @{
     ViewData["Title"] = "Vehículos";
@@ -28,11 +29,16 @@
             <div class="row">
                 <h3 class="m-0 font-weight-bold col-md-11 branch-title">@ViewData["Title"]</h3>
 
-                <div class="col-md-1">
-                    <a asp-action="Create" class="btn btn-primary">
-                        <i class="bi bi-plus-circle"></i>
-                    </a>
-                </div>
+                @if (await Mediator.Send(new UserHasPermissionQuery
+                {
+                    UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                    PermissionCode = PermissionCodesCatalog.CREATE_VEHICLES
+                }))
+                {
+                    <div class="col-md-1">
+                        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> </a>
+                    </div>
+                }
 
                 <form method="get" asp-action="Index" class="row g-3 mb-4">
                     <input type="hidden" name="page" value="1" />   
@@ -173,30 +179,60 @@
 
                                 <div class="vehicle-actions">
 
-                                    <a asp-action="Edit"
-                                           asp-route-id="@item.Id"
-                                           class="btn btn-sm btn-link"
-                                           data-bs-toggle="tooltip"
-                                           data-bs-placement="top"
-                                           title="Editar vehículo">
-                                        <i class="bi bi-pencil-fill text-warning fs-4"></i>
-                                    </a>
+                                    <div class="vehicle-rent-action">
+                                        @if (item.Status == VehicleStatus.Available)
+                                        {
+                                            <a asp-controller="Reservations"
+                                                   asp-action="Create"
+                                                   asp-route-vehicleId="@item.Id"
+                                                   class="btn btn-primary btn-rent-now">
+                                                <i class="bi bi-calendar-check"></i>
+                                                Rentar ahora
+                                            </a>
+                                        }
+                                    </div>
 
-                                    <form asp-action="Delete"
-                                          asp-route-id="@item.Id"
-                                          method="post"
-                                          class="formDeleteVehicle"
-                                          style="display: contents">
+                                    @if(await Mediator.Send(new UserHasPermissionQuery
+                                    {
+                                        UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                        PermissionCode = PermissionCodesCatalog.EDIT_VEHICLES
+                                    }))
+                                    {
+                                        
+                                        <a asp-action="Edit"
+                                               asp-route-id="@item.Id"
+                                               class="btn btn-sm btn-link"
+                                               data-bs-toggle="tooltip"
+                                               data-bs-placement="top"
+                                               title="Editar vehículo">
+                                            <i class="bi bi-pencil-fill text-warning fs-4"></i>
+                                        </a>
+                                    }
 
-                                        <button type="button"
-                                                class="btn btn-sm btn-link"
-                                                onclick="confirmDeleteVehicle(this)"
-                                                data-bs-toggle="tooltip"
-                                                data-bs-placement="top"
-                                                title="Eliminar vehículo">
-                                            <i class="bi bi-trash text-danger fs-4"></i>
-                                        </button>
-                                    </form>
+                                    @if (await Mediator.Send(new UserHasPermissionQuery
+                                    {
+                                        UserId = User.FindFirstValue(ClaimTypes.NameIdentifier),
+                                        PermissionCode = PermissionCodesCatalog.DELETE_VEHICLES
+                                    }))
+                                    {
+                                        
+                                        <form asp-action="Delete"
+                                              asp-route-id="@item.Id"
+                                              method="post"
+                                              class="formDeleteVehicle"
+                                              style="display: contents">
+
+                                            <button type="button"
+                                                    class="btn btn-sm btn-link"
+                                                    onclick="confirmDeleteVehicle(this)"
+                                                    data-bs-toggle="tooltip"
+                                                    data-bs-placement="top"
+                                                    title="Eliminar vehículo">
+                                                <i class="bi bi-trash text-danger fs-4"></i>
+                                            </button>
+                                        </form>
+                                    }
+
 
                                 </div>
 
