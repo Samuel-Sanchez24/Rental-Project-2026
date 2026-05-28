@@ -30,6 +30,13 @@ namespace Rental_Project_2026.Application.Contracts.Security
         public const string EDIT_ROLES = "editRoles";
         public const string DELETE_ROLES     = "deleteRoles";
 
+        //Reservations
+        public const string SHOW_RESERVATION = "showReservations";
+        public const string CREATE_RESERVATIONS = "createReservations";
+        public const string EDIT_RESERVATIONS = "editReservations";
+        public const string CANCEL_RESERVATIONS = "cancelledReservations";
+
+
         public readonly record struct PermissionSeed(string Code, string Description, string Module);
 
         public static IReadOnlyList<PermissionSeed> All { get; } = new List<PermissionSeed>
@@ -53,6 +60,11 @@ namespace Rental_Project_2026.Application.Contracts.Security
                 new PermissionSeed(CREATE_ROLES, "Crear Roles", "Roles"),
                 new PermissionSeed(EDIT_ROLES, "Editar Roles", "Roles"),
                 new PermissionSeed(DELETE_ROLES, "Eliminar Roles", "Roles"),
+
+                new PermissionSeed(SHOW_RESERVATION, "Ver Reservas", "Reservas"),
+                new PermissionSeed(CREATE_RESERVATIONS, "Crear Reservas", "Reservas"),
+                new PermissionSeed(EDIT_RESERVATIONS, "Editar Reservas", "Reservas"),
+                new PermissionSeed(CANCEL_RESERVATIONS, "Cancelar Reservas", "Reservas")
 
 
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Rental_Project_2026.Persistence;
 
@@ -11,9 +12,11 @@ using Rental_Project_2026.Persistence;
 namespace Rental_Project_2026.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20260528021805_ChangeDriverLicenseNumberToCategories")]
+    partial class ChangeDriverLicenseNumberToCategories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,7 +123,7 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.Permission", b =>
@@ -227,8 +230,7 @@ namespace Rental_Project_2026.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AssistanceNotes")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
@@ -241,8 +243,7 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.Property<string>("CustomerFullName")
                         .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("nvarchar(120)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("DailyPrice")
                         .HasPrecision(18, 2)
@@ -253,26 +254,22 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.Property<string>("DocumentNumber")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DriverLicenseCategories")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DriverLicenseExpirationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("nvarchar(120)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("RentDate")
                         .HasColumnType("datetime2");
@@ -292,7 +289,6 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("VehicleId")
@@ -496,7 +492,7 @@ namespace Rental_Project_2026.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Rental_Project_2026.Persistence.Entities.ApplicationUser", null)
+                    b.HasOne("Rental_Project_2026.Domain.Account.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -509,6 +505,8 @@ namespace Rental_Project_2026.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Branch");
+
+                    b.Navigation("User");
 
                     b.Navigation("Vehicle");
                 });

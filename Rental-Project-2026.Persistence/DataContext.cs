@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-//<<<<<<< Updated upstream
+using Rental_Project_2026.Domain.Account;
 using Rental_Project_2026.Domain.Entities;
 using Rental_Project_2026.Domain.Entities.Account;
 using Rental_Project_2026.Domain.Entities.Branches;
@@ -17,9 +17,11 @@ namespace Rental_Project_2026.Persistence
         }
         public DbSet<Branch> Branches { get; set; }
         public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<User> DomainUsers { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<Reservation> Reservations { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,6 +32,14 @@ namespace Rental_Project_2026.Persistence
 
             modelBuilder.Entity<Vehicle>()
                 .Property(v => v.DailyPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Reservation>()
+                .Property(r => r.DailyPrice)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Reservation>()
+                .Property(r => r.TotalPrice)
                 .HasPrecision(18, 2);
         }
     }

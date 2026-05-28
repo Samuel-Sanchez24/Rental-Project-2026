@@ -78,7 +78,23 @@
                 <span>Roles</span>
             </a>
         </li>
-    }
+        }
+
+        @if (userId != null && await Mediator.Send(new UserHasPermissionQuery
+        {
+            UserId = userId,
+            PermissionCode = PermissionCodesCatalog.SHOW_RESERVATION
+        }))
+        {
+            <li class="nav-item"> 
+                <a class="nav-link @(controller == "Reservations" ? "" : "collapsed")"
+                asp-controller="Reservations"
+                asp-action="Index">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Mis reservas</span>
+                </a>
+            </li>
+        }
 
 </ul>
 

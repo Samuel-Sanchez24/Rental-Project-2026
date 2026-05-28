@@ -35,6 +35,7 @@ namespace Rental_Project_2026.Persistence.Seeding
         private async Task SeedRolesAsync()
         {
             await CheckRolesAsync(RolesCatalog.ADMIN, PermissionCodesCatalog.All.Select(s => s.Code).ToList());
+
             await CheckRolesAsync(RolesCatalog.EMPLOYEE, new List<string>
             {
                 PermissionCodesCatalog.SHOW_VEHICLES,
@@ -42,8 +43,15 @@ namespace Rental_Project_2026.Persistence.Seeding
 
                 PermissionCodesCatalog.SHOW_BRANCHES,
 
+                PermissionCodesCatalog.CREATE_USERS,
                 PermissionCodesCatalog.EDIT_USERS,
-                PermissionCodesCatalog.SHOW_USERS
+                PermissionCodesCatalog.SHOW_USERS,
+
+                PermissionCodesCatalog.SHOW_RESERVATION,
+                PermissionCodesCatalog.CREATE_RESERVATIONS,
+                PermissionCodesCatalog.EDIT_RESERVATIONS,
+                PermissionCodesCatalog.CANCEL_RESERVATIONS,
+
 
             });
 
@@ -52,6 +60,10 @@ namespace Rental_Project_2026.Persistence.Seeding
                 PermissionCodesCatalog.SHOW_BRANCHES,
 
                 PermissionCodesCatalog.SHOW_VEHICLES,
+
+                PermissionCodesCatalog.SHOW_RESERVATION,
+                PermissionCodesCatalog.CREATE_RESERVATIONS,
+                PermissionCodesCatalog.CANCEL_RESERVATIONS
 
             }); 
         }

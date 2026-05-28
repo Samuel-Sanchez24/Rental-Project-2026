@@ -1,0 +1,215 @@
+﻿@model Rental_Project_2026.Application.UseCases.Reservations.Queries.GetReservationById.ReservationDetailDTO
+@using Rental_Project_2026.Domain.Enums
+
+@{
+    ViewData["Title"] = "Detalle de reserva";
+}
+
+<link rel="stylesheet" href="~/css/theme-dark.css" />
+
+<div class="pagetitle">
+    <h1>Detalle de reserva</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Reservations" asp-action="Index">Mis reservas</a>
+            </li>
+            <li class="breadcrumb-item active">Detalle</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.VehicleBrand @Model.VehicleModel</h5>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.VehicleImageUrl))
+                    {
+                        <img src="@Model.VehicleImageUrl"
+                             alt="@Model.VehicleBrand @Model.VehicleModel"
+                             class="img-fluid rounded mb-3"
+                             style="width: 100%; height: 230px; object-fit: cover;" />
+                    }
+
+                    <p><strong>Placa:</strong> @Model.VehiclePlate</p>
+                    <p><strong>Sucursal:</strong> @Model.BranchName</p>
+                    <p><strong>Ciudad:</strong> @Model.BranchCity</p>
+                    <p><strong>Dirección:</strong> @Model.BranchAddress</p>
+
+                    <hr />
+
+                    <p><strong>Precio diario:</strong> @Model.DailyPriceAtBooking.ToString("C0")</p>
+                    <p><strong>Días:</strong> @Model.Days</p>
+                    <p><strong>Total:</strong> <span class="fw-bold">@Model.TotalPrice.ToString("C0")</span></p>
+
+                    <p>
+                        <strong>Estado:</strong>
+                        @switch (Model.Status)
+                        {
+                            case ReservationStatus.Pending:
+                                <span class="badge bg-warning text-dark">Pendiente de pago</span>
+                                break;
+
+                            case ReservationStatus.Confirmed:
+                                <span class="badge bg-success">Confirmada</span>
+                                break;
+
+                            case ReservationStatus.Cancelled:
+                                <span class="badge bg-danger">Cancelada</span>
+                                break;
+
+                            case ReservationStatus.Finished:
+                                <span class="badge bg-secondary">Finalizada</span>
+                                break;
+                        }
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Información del cliente</h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Nombre completo</strong>
+                            <p>@Model.CustomerFullName</p>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Identificación</strong>
+                            <p>@Model.DocumentNumber</p>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Teléfono</strong>
+                            <p>@Model.PhoneNumber</p>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Correo electrónico</strong>
+                            <p>@Model.Email</p>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Fecha de nacimiento</strong>
+                            <p>@Model.BirthDate.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Información de conducción</h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <strong>Categorías de licencia</strong>
+                            <p>@Model.DriverLicenseCategories</p>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <strong>Vencimiento de licencia</strong>
+                            <p>@Model.DriverLicenseExpirationDate.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Fechas de la reserva</h5>
+
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <strong>Fecha de creación</strong>
+                            <p>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <strong>Fecha de renta</strong>
+                            <p>@Model.RentDate.ToString("dd/MM/yyyy")</p>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <strong>Fecha de devolución</strong>
+                            <p>@Model.ReturnDate.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.RequiresSpecialAssistance)
+            {
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Asistencia especial</h5>
+
+                        <p>
+                            @(string.IsNullOrWhiteSpace(Model.AssistanceNotes)
+                                ? "El cliente indicó que requiere asistencia especial, pero no agregó observaciones."
+                                : Model.AssistanceNotes)
+                        </p>
+                    </div>
+                </div>
+            }
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Acciones</h5>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            Volver a mis reservas
+                        </a>
+
+                        @if (Model.Status == ReservationStatus.Pending)
+                        {
+                            <a asp-action="Edit"
+                                   asp-route-id="@Model.Id"
+                                   class="btn btn-outline-warning">
+                                Editar reserva
+                            </a>
+
+                            <form asp-action="Delete"
+                                  asp-route-id="@Model.Id"
+                                  method="post"
+                                  class="d-inline">
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger"
+                                        onclick="return confirm('¿Seguro que deseas cancelar esta reserva?');">
+                                    Cancelar reserva
+                                </button>
+                            </form>
+
+                            <button type="button" class="btn btn-primary" disabled>
+                                Pagar ahora
+                            </button>
+                        }
+                    </div>
+
+                    @if (Model.Status == ReservationStatus.Pending)
+                    {
+                        <small class="text-muted d-block mt-3 text-end">
+                            El pago se habilitará cuando se implemente el módulo de pagos.
+                        </small>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

@@ -1,0 +1,266 @@
+﻿@model Rental_Project_2026.Web.DTOs.Reservations.CreateReservationDTO
+
+@{
+    ViewData["Title"] = "Crear reserva";
+}
+
+<link rel="stylesheet" href="~/css/theme-dark.css" />
+
+<div class="pagetitle">
+    <h1>Crear reserva</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Vehicles" asp-action="Index">Vehículos</a>
+            </li>
+            <li class="breadcrumb-item active">Crear reserva</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.VehicleBrand @Model.VehicleModel</h5>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.VehicleImageUrl))
+                    {
+                        <img src="@Model.VehicleImageUrl"
+                             alt="@Model.VehicleBrand @Model.VehicleModel"
+                             class="img-fluid rounded mb-3"
+                             style="width: 100%; height: 230px; object-fit: cover;" />
+                    }
+
+                    <p><strong>Placa:</strong> @Model.VehiclePlate</p>
+                    <p><strong>Sucursal:</strong> @Model.BranchName</p>
+                    <p><strong>Ciudad:</strong> @Model.BranchCity</p>
+                    <p><strong>Precio diario:</strong> @Model.DailyPrice.ToString("C0")</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Datos de la reserva</h5>
+
+                    <form asp-action="Create" asp-controller="Reservations" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="VehicleId" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <h6 class="mb-3">Información del cliente</h6>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="CustomerFullName" class="form-label"></label>
+                                <input asp-for="CustomerFullName" class="form-control" />
+                                <span asp-validation-for="CustomerFullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DocumentNumber" class="form-label"></label>
+                                <input asp-for="DocumentNumber" class="form-control" />
+                                <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="PhoneNumber" class="form-label"></label>
+                                <input asp-for="PhoneNumber" class="form-control" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Email" class="form-label"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BirthDate" class="form-label"></label>
+                                <input asp-for="BirthDate" type="date" class="form-control" />
+                                <span asp-validation-for="BirthDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <h6 class="mb-3">Información de conducción</h6>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DriverLicenseCategories" class="form-label"></label>
+
+                                <div class="dropdown w-100">
+                                    <button class="form-select text-start d-flex justify-content-between align-items-center"
+                                            type="button"
+                                            id="licenseCategoriesDropdown"
+                                            data-bs-toggle="dropdown"
+                                            data-bs-auto-close="outside"
+                                            aria-expanded="false">
+                                        <span id="licenseCategoriesText">Seleccionar categorías</span>
+                                    </button>
+
+                                    <div class="dropdown-menu w-100 p-3 shadow-sm dropdown-license-categories"
+                                         aria-labelledby="licenseCategoriesDropdown">
+                                        @foreach (var category in Model.AvailableLicenseCategories)
+                                        {
+                                            var isChecked = Model.DriverLicenseCategories != null &&
+                                                            Model.DriverLicenseCategories.Contains(category);
+
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input license-category-checkbox"
+                                                       type="checkbox"
+                                                       name="DriverLicenseCategories"
+                                                       value="@category"
+                                                       id="cat_@category"
+                                                @(isChecked ? "checked" : null) />
+
+                                                <label class="form-check-label" for="cat_@category">
+                                                    @category
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+
+                                <span asp-validation-for="DriverLicenseCategories" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="DriverLicenseExpirationDate" class="form-label"></label>
+                                <input asp-for="DriverLicenseExpirationDate" type="date" class="form-control" />
+                                <span asp-validation-for="DriverLicenseExpirationDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <h6 class="mb-3">Fechas de renta</h6>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="RentDate" class="form-label"></label>
+                                <input asp-for="RentDate" type="date" class="form-control" id="rentDate" />
+                                <span asp-validation-for="RentDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ReturnDate" class="form-label"></label>
+                                <input asp-for="ReturnDate" type="date" class="form-control" id="returnDate" />
+                                <span asp-validation-for="ReturnDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <h6 class="mb-3">Asistencia especial</h6>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="RequiresSpecialAssistance" class="form-check-input" />
+                            <label asp-for="RequiresSpecialAssistance" class="form-check-label"></label>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="AssistanceNotes" class="form-label"></label>
+                            <textarea asp-for="AssistanceNotes" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="AssistanceNotes" class="text-danger"></span>
+                        </div>
+
+                        <div class="alert alert-info">
+                            <p class="mb-1">
+                                <strong>Días estimados:</strong>
+                                <span id="daysPreview">1</span>
+                            </p>
+                            <p class="mb-0">
+                                <strong>Total estimado:</strong>
+                                <span id="totalPreview">@Model.DailyPrice.ToString("C0")</span>
+                            </p>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-controller="Vehicles" asp-action="Index" class="btn btn-outline-secondary">
+                                Cancelar
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                Confirmar reserva
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const dailyPrice = @Model.DailyPrice.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+        const rentDateInput = document.getElementById("rentDate");
+        const returnDateInput = document.getElementById("returnDate");
+        const daysPreview = document.getElementById("daysPreview");
+        const totalPreview = document.getElementById("totalPreview");
+
+        function calculatePreview() {
+            const rentDate = new Date(rentDateInput.value);
+            const returnDate = new Date(returnDateInput.value);
+
+            if (isNaN(rentDate) || isNaN(returnDate) || returnDate <= rentDate) {
+                daysPreview.innerText = "0";
+                totalPreview.innerText = "$0";
+                return;
+            }
+
+            const millisecondsPerDay = 1000 * 60 * 60 * 24;
+            const days = Math.round((returnDate - rentDate) / millisecondsPerDay);
+            const total = days * dailyPrice;
+
+            daysPreview.innerText = days;
+            totalPreview.innerText = total.toLocaleString("es-CO", {
+                style: "currency",
+                currency: "COP",
+                maximumFractionDigits: 0
+            });
+        }
+
+        rentDateInput.addEventListener("change", calculatePreview);
+        returnDateInput.addEventListener("change", calculatePreview);
+
+        calculatePreview();
+    </script>
+
+    <script>
+        function updateLicenseCategoriesText() {
+            const checkboxes = document.querySelectorAll('.license-category-checkbox:checked');
+            const text = document.getElementById('licenseCategoriesText');
+
+            if (!text) return;
+
+            if (checkboxes.length === 0) {
+                text.innerText = 'Seleccionar categorías';
+                return;
+            }
+
+            const values = Array.from(checkboxes).map(c => c.value);
+            text.innerText = values.join(', ');
+        }
+
+        document.querySelectorAll('.license-category-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', updateLicenseCategoriesText);
+        });
+
+        updateLicenseCategoriesText();
+    </script>
+}
