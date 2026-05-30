@@ -2,6 +2,7 @@ using AspNetCoreHero.ToastNotification;
 using AspNetCoreHero.ToastNotification.Extensions;
 using Rental_Project_2026.Application;
 using Rental_Project_2026.Persistence;
+using Rental_Project_2026.Persistence.Payments;
 using Rental_Project_2026.Persistence.Seeding;
 using Rental_Project_2026.Web.Middlewares;
 using System.Reflection;
@@ -30,6 +31,8 @@ builder.Services.AddNotyf(configure =>
 
 builder.Services.AddApplicationServices();
 builder.Services.AddPersistenceServices();
+builder.Services.Configure<PaymentGatewayOptions>(
+    builder.Configuration.GetSection(PaymentGatewayOptions.SectionName));
 
 WebApplication app = builder.Build();
 

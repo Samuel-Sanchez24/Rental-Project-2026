@@ -1,0 +1,101 @@
+@model Rental_Project_2026.Application.UseCases.Payments.Queries.GetPaymentById.PaymentDetailDTO
+@using Rental_Project_2026.Domain.Enums
+
+@{
+    ViewData["Title"] = "Pago de reserva";
+}
+
+<link rel="stylesheet" href="~/css/theme-dark.css" />
+
+<div class="pagetitle">
+    <h1>Pagar reserva</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Reservations" asp-action="Index">Mis reservas</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Reservations" asp-action="Details" asp-route-id="@Model.ReservationId">Detalle</a>
+            </li>
+            <li class="breadcrumb-item active">Pago</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Resumen del pago</h5>
+
+                    <p><strong>Reserva:</strong> @Model.ReservationId</p>
+                    <p><strong>Vehículo:</strong> @Model.VehicleBrand @Model.VehicleModel</p>
+                    <p><strong>Placa:</strong> @Model.VehiclePlate</p>
+                    <p><strong>Sucursal:</strong> @Model.BranchName</p>
+                    <p><strong>Cliente:</strong> @Model.CustomerFullName</p>
+                    <p><strong>Correo:</strong> @Model.CustomerEmail</p>
+
+                    <hr />
+
+                    <p><strong>Proveedor:</strong> @Model.Provider</p>
+                    <p><strong>Referencia:</strong> @Model.ProviderReference</p>
+                    <p><strong>Estado:</strong> @Model.Status</p>
+                    <p><strong>Total:</strong> <span class="fw-bold">@Model.Amount.ToString("C0")</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Pasarela de prueba</h5>
+
+                    <div class="alert alert-warning">
+                        Este flujo usa MockPaymentGateway para pruebas locales. La integración con Bancolombia quedó preparada por configuración.
+                    </div>
+
+                    <p class="mb-4">
+                        Elige el resultado que quieres simular para completar el flujo de pago.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-2 justify-content-end">
+                        <a asp-controller="Reservations" asp-action="Details" asp-route-id="@Model.ReservationId" class="btn btn-outline-secondary">
+                            Volver al detalle
+                        </a>
+
+                        <form asp-action="CompleteMockPayment" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="paymentId" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@PaymentStatus.Pending" />
+                            <button type="submit" class="btn btn-outline-primary">
+                                Mantener pendiente
+                            </button>
+                        </form>
+
+                        <form asp-action="CompleteMockPayment" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="paymentId" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@PaymentStatus.Failed" />
+                            <button type="submit" class="btn btn-outline-danger">
+                                Rechazar pago
+                            </button>
+                        </form>
+
+                        <form asp-action="CompleteMockPayment" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="paymentId" value="@Model.Id" />
+                            <input type="hidden" name="status" value="@PaymentStatus.Paid" />
+                            <button type="submit" class="btn btn-success">
+                                Aprobar pago
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

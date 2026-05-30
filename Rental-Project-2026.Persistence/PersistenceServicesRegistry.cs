@@ -4,7 +4,10 @@ using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Rental_Project_2026.Application.Contracts.Payments;
 using Rental_Project_2026.Application.Contracts.Repositories;
+using Rental_Project_2026.Persistence.Payments;
 using Rental_Project_2026.Persistence.Entities;
 using Rental_Project_2026.Persistence.Repositories;
 using Rental_Project_2026.Persistence.Seeding;
@@ -28,6 +31,21 @@ namespace Rental_Project_2026.Persistence
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IRolesRepository, RolesRepository>();
             services.AddScoped<IReservationsRepository, ReservationsRepository>();
+            services.AddScoped<IPaymentsRepository, PaymentsRepository>();
+            services.AddScoped<MockPaymentGateway>();
+            services.AddScoped<BancolombiaPaymentGateway>(serviceProvider =>
+                new BancolombiaPaymentGateway(
+                    new HttpClient(),
+                    serviceProvider.GetRequiredService<IOptions<PaymentGatewayOptions>>()));
+            services.AddScoped<IPaymentGateway>(serviceProvider =>
+            {
+                PaymentGatewayOptions options =
+                    serviceProvider.GetRequiredService<IOptions<PaymentGatewayOptions>>().Value;
+
+                return string.Equals(options.DefaultGateway, "Bancolombia", StringComparison.OrdinalIgnoreCase)
+                    ? serviceProvider.GetRequiredService<BancolombiaPaymentGateway>()
+                    : serviceProvider.GetRequiredService<MockPaymentGateway>();
+            });
 
             services.AddTransient<SeedDb>();
 

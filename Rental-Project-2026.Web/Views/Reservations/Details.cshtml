@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Detalle de reserva";
+    bool isAdmin = ViewBag.IsAdmin == true;
 }
 
 <link rel="stylesheet" href="~/css/theme-dark.css" />
@@ -68,6 +69,35 @@
                             case ReservationStatus.Finished:
                                 <span class="badge bg-secondary">Finalizada</span>
                                 break;
+                        }
+                    </p>
+
+                    <p>
+                        <strong>Estado del pago:</strong>
+                        @if (Model.PaymentStatus.HasValue)
+                        {
+                            @switch (Model.PaymentStatus.Value)
+                            {
+                                case PaymentStatus.Paid:
+                                    <span class="badge bg-success">Pagado</span>
+                                    break;
+
+                                case PaymentStatus.Failed:
+                                    <span class="badge bg-danger">Fallido</span>
+                                    break;
+
+                                case PaymentStatus.Cancelled:
+                                    <span class="badge bg-secondary">Cancelado</span>
+                                    break;
+
+                                default:
+                                    <span class="badge bg-warning text-dark">Pendiente</span>
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            <span class="badge bg-light text-dark">Sin intento de pago</span>
                         }
                     </p>
                 </div>
@@ -174,14 +204,17 @@
                             Volver a mis reservas
                         </a>
 
-                        @if (Model.Status == ReservationStatus.Pending)
+                        @if (Model.Status == ReservationStatus.Pending || isAdmin)
                         {
                             <a asp-action="Edit"
                                    asp-route-id="@Model.Id"
                                    class="btn btn-outline-warning">
                                 Editar reserva
                             </a>
+                        }
 
+                        @if (Model.Status == ReservationStatus.Pending)
+                        {
                             <form asp-action="Delete"
                                   asp-route-id="@Model.Id"
                                   method="post"
@@ -195,16 +228,27 @@
                                 </button>
                             </form>
 
-                            <button type="button" class="btn btn-primary" disabled>
-                                Pagar ahora
-                            </button>
+                            @if (Model.CanPayNow)
+                            {
+                                <form asp-controller="Payments"
+                                      asp-action="CreateForReservation"
+                                      asp-route-reservationId="@Model.Id"
+                                      method="post"
+                                      class="d-inline">
+                                    @Html.AntiForgeryToken()
+
+                                    <button type="submit" class="btn btn-success">
+                                        Pagar Ahora
+                                    </button>
+                                </form>
+                            }
                         }
                     </div>
 
                     @if (Model.Status == ReservationStatus.Pending)
                     {
                         <small class="text-muted d-block mt-3 text-end">
-                            El pago se habilitará cuando se implemente el módulo de pagos.
+                            Si el pago sigue pendiente, el sistema reutiliza la intención de pago activa.
                         </small>
                     }
                 </div>

@@ -138,6 +138,45 @@ namespace Rental_Project_2026.Domain.Entities
             TotalPrice = CalculateTotalPrice(Days, DailyPrice);
         }
 
+        public void UpdateCustomerInformation(
+            string customerFullName,
+            string documentNumber,
+            string phoneNumber,
+            string email,
+            DateTime birthDate,
+            IEnumerable<string> driverLicenseCategories,
+            DateTime driverLicenseExpirationDate,
+            bool requiresSpecialAssistance,
+            string? assistanceNotes)
+        {
+            ApplyCustomerRules(
+                customerFullName,
+                documentNumber,
+                phoneNumber,
+                email,
+                birthDate);
+
+            ApplyDriverLicenseRules(
+                driverLicenseCategories,
+                driverLicenseExpirationDate);
+
+            ApplyAssistanceRules(
+                requiresSpecialAssistance,
+                assistanceNotes);
+
+            CustomerFullName = customerFullName.Trim();
+            DocumentNumber = documentNumber.Trim();
+            PhoneNumber = phoneNumber.Trim();
+            Email = email.Trim();
+            BirthDate = birthDate.Date;
+            DriverLicenseCategories = BuildDriverLicenseCategories(driverLicenseCategories);
+            DriverLicenseExpirationDate = driverLicenseExpirationDate.Date;
+            RequiresSpecialAssistance = requiresSpecialAssistance;
+            AssistanceNotes = string.IsNullOrWhiteSpace(assistanceNotes)
+                ? null
+                : assistanceNotes.Trim();
+        }
+
         public void ChangeStatus(ReservationStatus status)
         {
             Status = status;

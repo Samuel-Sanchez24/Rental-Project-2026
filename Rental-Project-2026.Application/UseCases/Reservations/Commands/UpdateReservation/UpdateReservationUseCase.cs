@@ -27,6 +27,39 @@ namespace Rental_Project_2026.Application.UseCases.Reservations.Commands.UpdateR
             if (reservation is null)
                 throw new BusinessRulesException("La reserva no existe.");
 
+            bool datesChanged = reservation.RentDate.Date != command.RentDate.Date ||
+                                reservation.ReturnDate.Date != command.ReturnDate.Date;
+
+            if (datesChanged)
+            {
+                bool existsActiveReservation = await _reservationsRepository.ExistsActiveReservationAsync(
+                    reservation.VehicleId,
+                    command.RentDate.Date,
+                    command.ReturnDate.Date,
+                    reservation.Id);
+
+                if (existsActiveReservation)
+                    throw new BusinessRulesException("El vehículo ya tiene una reserva activa en las fechas seleccionadas.");
+
+                reservation.UpdateDates(command.RentDate, command.ReturnDate);
+            }
+
+            if (command.IsAdmin)
+            {
+                reservation.UpdateCustomerInformation(
+                    command.CustomerFullName,
+                    command.DocumentNumber,
+                    command.PhoneNumber,
+                    command.Email,
+                    command.BirthDate,
+                    command.DriverLicenseCategories,
+                    command.DriverLicenseExpirationDate,
+                    command.RequiresSpecialAssistance,
+                    command.AssistanceNotes);
+
+                reservation.ChangeStatus(command.Status);
+            }
+
             try
             {
                 await _reservationsRepository.UpdateAsync(reservation);

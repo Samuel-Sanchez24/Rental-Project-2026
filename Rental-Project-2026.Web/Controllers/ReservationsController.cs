@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rental_Project_2026.Application.Contracts.Pagination;
+using Rental_Project_2026.Application.Contracts.Security;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetAccountUserInfo;
 using Rental_Project_2026.Application.UseCases.Reservations.Commands.CancelledReservation;
 using Rental_Project_2026.Application.UseCases.Reservations.Commands.CreateReservation;
 using Rental_Project_2026.Application.UseCases.Reservations.Commands.UpdateReservation;
@@ -46,12 +48,13 @@ namespace Rental_Project_2026.Web.Controllers
                     return RedirectToAction("Login", "Account");
                 }
 
+                bool isAdmin = await IsCurrentUserAdminAsync();
                 PaginationRequest pagination = new PaginationRequest(page, pageSize);
 
                 GetReservationListQuery query = new GetReservationListQuery
                 {
                     Pagination = pagination,
-                    UserIdFilter = userId,
+                    UserIdFilter = isAdmin ? null : userId,
                     VehicleIdFilter = vehicleIdFilter,
                     BranchIdFilter = branchIdFilter,
                     StatusFilter = statusFilter,
@@ -64,7 +67,7 @@ namespace Rental_Project_2026.Web.Controllers
                 ReservationIndexViewModel viewModel = new ReservationIndexViewModel
                 {
                     List = result,
-                    UserIdFilter = userId,
+                    UserIdFilter = isAdmin ? null : userId,
                     VehicleIdFilter = vehicleIdFilter,
                     BranchIdFilter = branchIdFilter,
                     StatusFilter = statusFilter,
@@ -72,6 +75,7 @@ namespace Rental_Project_2026.Web.Controllers
                     RentDateToFilter = rentDateToFilter
                 };
 
+                ViewBag.IsAdmin = isAdmin;
                 return View(viewModel);
             }
             catch (Exception ex)
@@ -96,13 +100,15 @@ namespace Rental_Project_2026.Web.Controllers
             try
             {
                 ReservationDetailDTO reservation = await _mediator.Send(new GetReservationByIdQuery(id));
+                bool isAdmin = await IsCurrentUserAdminAsync();
 
-                if (!IsCurrentUserOwner(reservation.UserId))
+                if (!isAdmin && !IsCurrentUserOwner(reservation.UserId))
                 {
                     _notyfService.Error("No tienes acceso a esta reserva.");
                     return RedirectToAction(nameof(Index));
                 }
 
+                ViewBag.IsAdmin = isAdmin;
                 return View(reservation);
             }
             catch (Exception ex)
@@ -221,14 +227,15 @@ namespace Rental_Project_2026.Web.Controllers
             try
             {
                 ReservationDetailDTO reservation = await _mediator.Send(new GetReservationByIdQuery(id));
+                bool isAdmin = await IsCurrentUserAdminAsync();
 
-                if (!IsCurrentUserOwner(reservation.UserId))
+                if (!isAdmin && !IsCurrentUserOwner(reservation.UserId))
                 {
                     _notyfService.Error("No tienes acceso para editar esta reserva.");
                     return RedirectToAction(nameof(Index));
                 }
 
-                if (reservation.Status != ReservationStatus.Pending)
+                if (!isAdmin && reservation.Status != ReservationStatus.Pending)
                 {
                     _notyfService.Error("Solo se pueden editar reservas pendientes de pago.");
                     return RedirectToAction(nameof(Details), new { id = reservation.Id });
@@ -244,12 +251,22 @@ namespace Rental_Project_2026.Web.Controllers
                     BranchName = reservation.BranchName,
                     UserFullName = reservation.UserFullName,
                     UserEmail = reservation.UserEmail,
+                    CustomerFullName = reservation.CustomerFullName,
+                    DocumentNumber = reservation.DocumentNumber,
+                    PhoneNumber = reservation.PhoneNumber,
+                    Email = reservation.Email,
+                    BirthDate = reservation.BirthDate,
+                    DriverLicenseCategories = ParseDriverLicenseCategories(reservation.DriverLicenseCategories),
+                    DriverLicenseExpirationDate = reservation.DriverLicenseExpirationDate,
+                    RequiresSpecialAssistance = reservation.RequiresSpecialAssistance,
+                    AssistanceNotes = reservation.AssistanceNotes,
                     RentDate = reservation.RentDate,
                     ReturnDate = reservation.ReturnDate,
                     Days = reservation.Days,
                     DailyPriceAtBooking = reservation.DailyPriceAtBooking,
                     TotalPrice = reservation.TotalPrice,
-                    Status = reservation.Status
+                    Status = reservation.Status,
+                    CanEditAllFields = isAdmin
                 };
 
                 return View(dto);
@@ -267,6 +284,11 @@ namespace Rental_Project_2026.Web.Controllers
         {
             try
             {
+                bool isAdmin = await IsCurrentUserAdminAsync();
+
+                if (!isAdmin)
+                    RemoveAdminOnlyValidationEntries();
+
                 if (!ModelState.IsValid)
                 {
                     await ReloadReservationDataAsync(dto);
@@ -276,13 +298,13 @@ namespace Rental_Project_2026.Web.Controllers
 
                 ReservationDetailDTO reservation = await _mediator.Send(new GetReservationByIdQuery(dto.Id));
 
-                if (!IsCurrentUserOwner(reservation.UserId))
+                if (!isAdmin && !IsCurrentUserOwner(reservation.UserId))
                 {
                     _notyfService.Error("No tienes acceso para editar esta reserva.");
                     return RedirectToAction(nameof(Index));
                 }
 
-                if (reservation.Status != ReservationStatus.Pending)
+                if (!isAdmin && reservation.Status != ReservationStatus.Pending)
                 {
                     _notyfService.Error("Solo se pueden editar reservas pendientes de pago.");
                     return RedirectToAction(nameof(Details), new { id = reservation.Id });
@@ -293,7 +315,23 @@ namespace Rental_Project_2026.Web.Controllers
                     Id = dto.Id,
                     RentDate = dto.RentDate,
                     ReturnDate = dto.ReturnDate,
-                    Status = reservation.Status
+                    Status = isAdmin ? dto.Status : reservation.Status,
+                    IsAdmin = isAdmin,
+                    CustomerFullName = isAdmin ? dto.CustomerFullName : reservation.CustomerFullName,
+                    DocumentNumber = isAdmin ? dto.DocumentNumber : reservation.DocumentNumber,
+                    PhoneNumber = isAdmin ? dto.PhoneNumber : reservation.PhoneNumber,
+                    Email = isAdmin ? dto.Email : reservation.Email,
+                    BirthDate = isAdmin ? dto.BirthDate : reservation.BirthDate,
+                    DriverLicenseCategories = isAdmin
+                        ? dto.DriverLicenseCategories
+                        : ParseDriverLicenseCategories(reservation.DriverLicenseCategories),
+                    DriverLicenseExpirationDate = isAdmin
+                        ? dto.DriverLicenseExpirationDate
+                        : reservation.DriverLicenseExpirationDate,
+                    RequiresSpecialAssistance = isAdmin
+                        ? dto.RequiresSpecialAssistance
+                        : reservation.RequiresSpecialAssistance,
+                    AssistanceNotes = isAdmin ? dto.AssistanceNotes : reservation.AssistanceNotes
                 };
 
                 await _mediator.Send(command);
@@ -361,6 +399,42 @@ namespace Rental_Project_2026.Web.Controllers
                 && reservationUserId == currentUserId;
         }
 
+        private async Task<bool> IsCurrentUserAdminAsync()
+        {
+            string? currentUserId = GetCurrentUserId();
+
+            if (string.IsNullOrWhiteSpace(currentUserId))
+                return false;
+
+            UserAccountInfoDTO? user = await _mediator.Send(new GetAccountUserInfoQuery
+            {
+                UserId = currentUserId
+            });
+
+            return string.Equals(user?.RoleName, RolesCatalog.ADMIN, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void RemoveAdminOnlyValidationEntries()
+        {
+            ModelState.Remove(nameof(EditReservationDTO.CustomerFullName));
+            ModelState.Remove(nameof(EditReservationDTO.DocumentNumber));
+            ModelState.Remove(nameof(EditReservationDTO.PhoneNumber));
+            ModelState.Remove(nameof(EditReservationDTO.Email));
+            ModelState.Remove(nameof(EditReservationDTO.BirthDate));
+            ModelState.Remove(nameof(EditReservationDTO.DriverLicenseCategories));
+            ModelState.Remove(nameof(EditReservationDTO.DriverLicenseExpirationDate));
+            ModelState.Remove(nameof(EditReservationDTO.RequiresSpecialAssistance));
+            ModelState.Remove(nameof(EditReservationDTO.AssistanceNotes));
+            ModelState.Remove(nameof(EditReservationDTO.Status));
+        }
+
+        private static List<string> ParseDriverLicenseCategories(string categories)
+        {
+            return categories
+                .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                .ToList();
+        }
+
         private async Task ReloadVehicleDataAsync(CreateReservationDTO dto)
         {
             if (dto.VehicleId == Guid.Empty)
@@ -391,10 +465,20 @@ namespace Rental_Project_2026.Web.Controllers
             dto.BranchName = reservation.BranchName;
             dto.UserFullName = reservation.UserFullName;
             dto.UserEmail = reservation.UserEmail;
-            dto.Days = reservation.Days;
             dto.DailyPriceAtBooking = reservation.DailyPriceAtBooking;
-            dto.TotalPrice = reservation.TotalPrice;
             dto.Status = reservation.Status;
+            dto.CanEditAllFields = await IsCurrentUserAdminAsync();
+
+            if (dto.ReturnDate.Date > dto.RentDate.Date)
+            {
+                dto.Days = (dto.ReturnDate.Date - dto.RentDate.Date).Days;
+                dto.TotalPrice = dto.Days * dto.DailyPriceAtBooking;
+            }
+            else
+            {
+                dto.Days = reservation.Days;
+                dto.TotalPrice = reservation.TotalPrice;
+            }
         }
     }
 }
