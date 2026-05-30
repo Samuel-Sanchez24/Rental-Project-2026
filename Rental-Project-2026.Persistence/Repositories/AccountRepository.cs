@@ -4,6 +4,8 @@ using Rental_Project_2026.Application.UseCases.Account.Commands.Login;
 using Rental_Project_2026.Application.UseCases.Account.Queries.GetAccountUserInfo;
 using Rental_Project_2026.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetProfile;
+using Rental_Project_2026.Domain.Exceptions;
 
 namespace Rental_Project_2026.Persistence.Repositories
 {
@@ -18,6 +20,49 @@ namespace Rental_Project_2026.Persistence.Repositories
             _signinManager = signinManager;
             _userManager = userManager;
             _context = context;
+        }
+
+        public async Task ChangePasswordAsync(string userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default)
+        {
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                throw new BusinessRulesException("El usuario no existe.");
+            }
+
+            IdentityResult result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new BusinessRulesException(string.Join("; ", result.Errors.Select(e => e.Description)));
+            }
+        }
+
+        public async Task<AccountProfileDTO> GetProfileAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new BusinessRulesException("El usuario es requerido.");
+            }
+
+            ApplicationUser? user = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.Id == userId, cancellationToken);
+
+            if (user is null)
+            {
+                throw new BusinessRulesException("El usuario no existe.");
+            }
+
+            return new AccountProfileDTO
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email ?? string.Empty,
+                PhoneNumber = user.PhoneNumber,
+                RoleName = user.Role.Name
+            };
         }
 
         public async Task<UserAccountInfoDTO> GetUserInfoAsync(string userId, CancellationToken cancellationToken = default)
@@ -68,6 +113,27 @@ namespace Rental_Project_2026.Persistence.Repositories
         public Task SignOutAsync(CancellationToken cancellationToken = default)
         {
             return _signinManager.SignOutAsync();
+        }
+
+        public async Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, CancellationToken cancellationToken = default)
+        {
+            ApplicationUser? user = await _userManager.FindByIdAsync(userId);
+
+            if (user is null)
+            {
+                throw new BusinessRulesException("El usuario no existe.");
+            }
+
+            user.FirstName = firstName.Trim();
+            user.LastName = lastName.Trim();
+            user.PhoneNumber = string.IsNullOrWhiteSpace(phoneNumber) ? null : phoneNumber.Trim();
+
+            IdentityResult result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                throw new BusinessRulesException(string.Join("; ", result.Errors.Select(e => e.Description)));
+            }
         }
 
         public async Task<bool> UserHasPermissionAsync(string userId, string permissionCode, CancellationToken cancellationToken = default)
