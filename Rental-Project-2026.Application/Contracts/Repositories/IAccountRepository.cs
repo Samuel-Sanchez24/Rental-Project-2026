@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Rental_Project_2026.Application.UseCases.Account.Commands.Login;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetAccesibleVehicle;
 using Rental_Project_2026.Application.UseCases.Account.Queries.GetAccountUserInfo;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetProfile;
 
 namespace Rental_Project_2026.Application.Contracts.Repositories
 {
@@ -15,5 +17,14 @@ namespace Rental_Project_2026.Application.Contracts.Repositories
         Task<UserAccountInfoDTO> GetUserInfoAsync(string userId, CancellationToken cancellationToken = default);
 
         Task<bool> UserHasPermissionAsync(string userId, string permissionCode, CancellationToken cancellationToken = default);
+
+        Task<AccountProfileDTO> GetProfileAsync(string userId, CancellationToken cancellationToken = default);
+
+        Task UpdateProfileAsync(string userId, string firstName, string lastName, string? phoneNumber, CancellationToken cancellationToken = default);
+
+        Task ChangePasswordAsync(string userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default);
+
+
+
     }
 }

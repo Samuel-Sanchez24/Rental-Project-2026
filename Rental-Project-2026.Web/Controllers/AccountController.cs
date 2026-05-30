@@ -1,9 +1,13 @@
 ﻿using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Rental_Project_2026.Application.UseCases.Account.Commands.ChangePassword;
 using Rental_Project_2026.Application.UseCases.Account.Commands.Login;
 using Rental_Project_2026.Application.UseCases.Account.Commands.Logout;
+using Rental_Project_2026.Application.UseCases.Account.Commands.UpdateProfile;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetProfile;
 using Rental_Project_2026.Web.DTOs.Account;
+using System.Security.Claims;
 
 namespace Rental_Project_2026.Web.Controllers
 {
@@ -95,6 +99,113 @@ namespace Rental_Project_2026.Web.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            //if (string.IsNullOrWhiteSpace(userId))
+            //{
+            //    return RedirectToAction(nameof(Login));
+            //}
+
+            try
+            {
+                EditProfileDTO dto = await BuildProfileDtoAsync(userId);
+                return View(dto);
+            }
+            catch (Exception ex)
+            {
+                _notifyService.Error(ex.Message);
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Profile(EditProfileDTO dto)
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    _notifyService.Error("Debe corregir los errores de validación.");
+                    return View(await BuildProfileDtoAsync(userId, dto));
+                }
+
+                await _mediator.Send(new UpdateProfileCommand
+                {
+                    UserId = userId,
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName,
+                    PhoneNumber = dto.PhoneNumber,
+                });
+
+                _notifyService.Success("Perfil actualizado exitosamente.");
+                return RedirectToAction(nameof(Profile));
+            }
+            catch (Exception ex)
+            {
+                _notifyService.Error(ex.Message);
+                return View(await BuildProfileDtoAsync(userId, dto));
+            }
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View(new ChangePasswordDTO());
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDTO dto)
+        {
+            string? userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!ModelState.IsValid)
+            {
+                _notifyService.Error("Debe corregir los errores de validación.");
+                return View(dto);
+            }
+
+            try
+            {
+                await _mediator.Send(new ChangePasswordCommand
+                {
+                    UserId = userId,
+                    CurrentPassword = dto.CurrentPassword,
+                    NewPassword = dto.NewPassword,
+                });
+
+                _notifyService.Success("Contraseña actualizada exitosamente.");
+                return RedirectToAction(nameof(Profile));
+            }
+            catch (Exception ex)
+            {
+                _notifyService.Error(ex.Message);
+                return View(dto);
+            }
+        }
+
+        private async Task<EditProfileDTO> BuildProfileDtoAsync(string userId, EditProfileDTO? posted = null)
+        {
+            AccountProfileDTO profile = await _mediator.Send(new GetProfileQuery { UserId = userId });
+
+            return new EditProfileDTO
+            {
+                FirstName = posted?.FirstName ?? profile.FirstName,
+                LastName = posted?.LastName ?? profile.LastName,
+                Email = profile.Email,
+                PhoneNumber = posted?.PhoneNumber ?? profile.PhoneNumber,
+                RoleName = profile.RoleName,
+            };
         }
     }
 }

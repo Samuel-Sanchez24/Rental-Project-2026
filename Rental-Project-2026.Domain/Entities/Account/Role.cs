@@ -10,6 +10,7 @@ namespace Rental_Project_2026.Domain.Entities.Account
         public Guid Id { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public ICollection<RolePermission> RolePermissions { get; private set; } = new List<RolePermission>();
+        public ICollection<RoleBranch> RoleBranches { get; private set; } = new List<RoleBranch>();
 
         private Role() { }
         public Role(string name)

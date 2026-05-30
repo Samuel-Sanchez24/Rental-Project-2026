@@ -18,10 +18,6 @@
     <ProjectReference Include="..\Rental-Project-2026.Domain\Rental-Project-2026.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UseCases\Account\Queries\" />
-  </ItemGroup>
-
   
 
 
