@@ -15,9 +15,9 @@ namespace Rental_Project_2026.Domain.Entities.Account
         public Role Role { get; set; }
         public Permission Permission { get; set; }
 
-        private RolePermission() { }
+        private RoleBranch() { }
 
-        public RolePermission(Guid roleId, Guid permissionId)
+        public RoleBranch(Guid roleId, Guid permissionId)
         {
             if (roleId == Guid.Empty)
             {
