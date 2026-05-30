@@ -10,6 +10,7 @@ namespace Rental_Project_2026.Application.Contracts.Repositories
             Guid vehicleId,
             DateTime rentDate,
             DateTime returnDate,
+            Guid? excludeReservationId = null,
             CancellationToken cancellationToken = default);
 
         Task<Reservation?> GetReservationByIdAsync(

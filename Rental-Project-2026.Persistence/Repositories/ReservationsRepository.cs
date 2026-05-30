@@ -22,11 +22,13 @@ namespace Rental_Project_2026.Persistence.Repositories
             Guid vehicleId,
             DateTime rentDate,
             DateTime returnDate,
+            Guid? excludeReservationId = null,
             CancellationToken cancellationToken = default)
         {
             return await _context.Reservations
                 .AnyAsync(r =>
                     r.VehicleId == vehicleId &&
+                    (!excludeReservationId.HasValue || r.Id != excludeReservationId.Value) &&
                     r.Status != ReservationStatus.Cancelled &&
                     r.Status != ReservationStatus.Finished &&
                     rentDate < r.ReturnDate &&

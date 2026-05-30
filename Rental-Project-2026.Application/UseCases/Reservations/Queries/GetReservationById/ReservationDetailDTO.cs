@@ -18,6 +18,11 @@ namespace Rental_Project_2026.Application.UseCases.Reservations.Queries.GetReser
         public decimal TotalPrice { get; set; }
 
         public ReservationStatus Status { get; set; }
+        public PaymentStatus? PaymentStatus { get; set; }
+        public Guid? PaymentId { get; set; }
+        public string? PaymentProvider { get; set; }
+        public string? PaymentProviderReference { get; set; }
+        public bool CanPayNow { get; set; }
 
         public DateTime CreatedAt { get; set; }
 

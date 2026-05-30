@@ -1,0 +1,251 @@
+@model Rental_Project_2026.Web.DTOs.Reservations.EditReservationDTO
+@using Rental_Project_2026.Domain.Enums
+
+@{
+    ViewData["Title"] = "Editar reserva";
+}
+
+<link rel="stylesheet" href="~/css/theme-dark.css" />
+
+<div class="pagetitle">
+    <h1>Editar reserva</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Reservations" asp-action="Index">Mis reservas</a>
+            </li>
+            <li class="breadcrumb-item active">Editar</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@Model.VehicleBrand @Model.VehicleModel</h5>
+
+                    <p><strong>Placa:</strong> @Model.VehiclePlate</p>
+                    <p><strong>Sucursal:</strong> @Model.BranchName</p>
+                    <p><strong>Cliente:</strong> @Model.UserFullName</p>
+                    <p><strong>Correo:</strong> @Model.UserEmail</p>
+
+                    <hr />
+
+                    <p><strong>Precio diario:</strong> @Model.DailyPriceAtBooking.ToString("C0")</p>
+                    <p><strong>Días actuales:</strong> <span id="daysPreview">@Model.Days</span></p>
+                    <p><strong>Total estimado:</strong> <span id="totalPreview">@Model.TotalPrice.ToString("C0")</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Actualizar fechas de la reserva</h5>
+
+                    <form asp-action="Edit" asp-controller="Reservations" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input asp-for="Id" type="hidden" />
+                        <input asp-for="VehicleId" type="hidden" />
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="VehiclePlate" class="form-label"></label>
+                                <input asp-for="VehiclePlate" class="form-control" readonly />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="BranchName" class="form-label"></label>
+                                <input asp-for="BranchName" class="form-control" readonly />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="UserFullName" class="form-label"></label>
+                                <input asp-for="UserFullName" class="form-control" readonly />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="UserEmail" class="form-label"></label>
+                                <input asp-for="UserEmail" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="RentDate" class="form-label"></label>
+                                <input asp-for="RentDate" type="date" class="form-control" id="rentDate" />
+                                <span asp-validation-for="RentDate" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ReturnDate" class="form-label"></label>
+                                <input asp-for="ReturnDate" type="date" class="form-control" id="returnDate" />
+                                <span asp-validation-for="ReturnDate" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        @if (Model.CanEditAllFields)
+                        {
+                            <hr />
+
+                            <h5 class="card-title">Información editable por administrador</h5>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="CustomerFullName" class="form-label"></label>
+                                    <input asp-for="CustomerFullName" class="form-control" />
+                                    <span asp-validation-for="CustomerFullName" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="DocumentNumber" class="form-label"></label>
+                                    <input asp-for="DocumentNumber" class="form-control" />
+                                    <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="PhoneNumber" class="form-label"></label>
+                                    <input asp-for="PhoneNumber" class="form-control" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Email" class="form-label"></label>
+                                    <input asp-for="Email" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="BirthDate" class="form-label"></label>
+                                    <input asp-for="BirthDate" type="date" class="form-control" />
+                                    <span asp-validation-for="BirthDate" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="DriverLicenseExpirationDate" class="form-label"></label>
+                                    <input asp-for="DriverLicenseExpirationDate" type="date" class="form-control" />
+                                    <span asp-validation-for="DriverLicenseExpirationDate" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label asp-for="DriverLicenseCategories" class="form-label"></label>
+
+                                    <div class="d-flex flex-wrap gap-3">
+                                        @foreach (string category in Model.AvailableLicenseCategories)
+                                        {
+                                            <div class="form-check">
+                                                <input class="form-check-input"
+                                                       type="checkbox"
+                                                       name="DriverLicenseCategories"
+                                                       value="@category"
+                                                       checked="@Model.DriverLicenseCategories.Contains(category)" />
+                                                <label class="form-check-label">@category</label>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <span asp-validation-for="DriverLicenseCategories" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <div class="form-check">
+                                        <input asp-for="RequiresSpecialAssistance" class="form-check-input" />
+                                        <label asp-for="RequiresSpecialAssistance" class="form-check-label"></label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 mb-3">
+                                    <label asp-for="AssistanceNotes" class="form-label"></label>
+                                    <textarea asp-for="AssistanceNotes" class="form-control" rows="3"></textarea>
+                                    <span asp-validation-for="AssistanceNotes" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Status" class="form-label"></label>
+                                    <select asp-for="Status"
+                                            asp-items="Html.GetEnumSelectList<ReservationStatus>()"
+                                            class="form-select">
+                                    </select>
+                                    <span asp-validation-for="Status" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info">
+                                Como administrador puedes editar la información de la reserva sin depender de su estado.
+                            </div>
+                        }
+
+                        @if (!Model.CanEditAllFields)
+                        {
+                        <div class="alert alert-info">
+                            <p class="mb-1"><strong>Estado actual:</strong> @Model.Status</p>
+                            <p class="mb-0">
+                                Solo se permite modificar las fechas mientras la reserva esté pendiente de pago.
+                            </p>
+                        </div>
+
+                        }
+
+                        <div class="d-flex justify-content-end gap-2">
+                            <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+                                Volver al detalle
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                Guardar cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const dailyPrice = @Model.DailyPriceAtBooking.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        const rentDateInput = document.getElementById("rentDate");
+        const returnDateInput = document.getElementById("returnDate");
+        const daysPreview = document.getElementById("daysPreview");
+        const totalPreview = document.getElementById("totalPreview");
+
+        function calculatePreview() {
+            const rentDate = new Date(rentDateInput.value);
+            const returnDate = new Date(returnDateInput.value);
+
+            if (isNaN(rentDate) || isNaN(returnDate) || returnDate <= rentDate) {
+                daysPreview.innerText = "0";
+                totalPreview.innerText = "$0";
+                return;
+            }
+
+            const millisecondsPerDay = 1000 * 60 * 60 * 24;
+            const days = Math.round((returnDate - rentDate) / millisecondsPerDay);
+            const total = days * dailyPrice;
+
+            daysPreview.innerText = days;
+            totalPreview.innerText = total.toLocaleString("es-CO", {
+                style: "currency",
+                currency: "COP",
+                maximumFractionDigits: 0
+            });
+        }
+
+        rentDateInput.addEventListener("change", calculatePreview);
+        returnDateInput.addEventListener("change", calculatePreview);
+        calculatePreview();
+    </script>
+}

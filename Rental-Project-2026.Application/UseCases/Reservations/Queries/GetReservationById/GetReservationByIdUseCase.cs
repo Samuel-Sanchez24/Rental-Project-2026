@@ -10,10 +10,14 @@ namespace Rental_Project_2026.Application.UseCases.Reservations.Queries.GetReser
     public class GetReservationByIdUseCase : IRequestHandler<GetReservationByIdQuery, ReservationDetailDTO>
     {
         private readonly IReservationsRepository _reservationsRepository;
+        private readonly IPaymentsRepository _paymentsRepository;
 
-        public GetReservationByIdUseCase(IReservationsRepository reservationsRepository)
+        public GetReservationByIdUseCase(
+            IReservationsRepository reservationsRepository,
+            IPaymentsRepository paymentsRepository)
         {
             _reservationsRepository = reservationsRepository;
+            _paymentsRepository = paymentsRepository;
         }
 
         public async Task<ReservationDetailDTO> Handle(GetReservationByIdQuery request)
@@ -22,6 +26,8 @@ namespace Rental_Project_2026.Application.UseCases.Reservations.Queries.GetReser
 
             if (reservation is null)
                 throw new BusinessRulesException("La reserva no existe.");
+
+            Payment? latestPayment = await _paymentsRepository.GetLatestByReservationIdAsync(reservation.Id);
 
             return new ReservationDetailDTO
             {
@@ -36,6 +42,12 @@ namespace Rental_Project_2026.Application.UseCases.Reservations.Queries.GetReser
                 TotalPrice = reservation.TotalPrice,
 
                 Status = reservation.Status,
+                PaymentStatus = latestPayment?.Status,
+                PaymentId = latestPayment?.Id,
+                PaymentProvider = latestPayment?.Provider,
+                PaymentProviderReference = latestPayment?.ProviderReference,
+                CanPayNow = reservation.Status == Domain.Enums.ReservationStatus.Pending &&
+                            latestPayment?.Status != Domain.Enums.PaymentStatus.Paid,
 
                 CreatedAt = reservation.CreatedAt,
 

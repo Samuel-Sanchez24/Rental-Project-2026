@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "Mis reservas";
+    bool isAdmin = ViewBag.IsAdmin == true;
 }
 
 <link rel="stylesheet" href="~/css/theme-dark.css" />
@@ -162,7 +163,7 @@
                                                 Detalle
                                             </a>
 
-                                            @if (item.Status == ReservationStatus.Pending)
+                                            @if (item.Status == ReservationStatus.Pending || isAdmin)
                                             {
                                                 <a asp-action="Edit"
                                                        asp-route-id="@item.Id"
@@ -170,18 +171,21 @@
                                                     Editar
                                                 </a>
 
-                                                <form asp-action="Delete"
-                                                      asp-route-id="@item.Id"
-                                                      method="post"
-                                                      class="formCancelReservation d-inline">
-                                                    @Html.AntiForgeryToken()
+                                                @if (item.Status == ReservationStatus.Pending)
+                                                {
+                                                    <form asp-action="Delete"
+                                                          asp-route-id="@item.Id"
+                                                          method="post"
+                                                          class="formCancelReservation d-inline">
+                                                        @Html.AntiForgeryToken()
 
-                                                    <button type="button"
-                                                            class="btn btn-sm btn-reservation-cancel"
-                                                            onclick="confirmCancelReservation(this)">
-                                                        Cancelar
-                                                    </button>
-                                                </form>
+                                                        <button type="button"
+                                                                class="btn btn-sm btn-reservation-cancel"
+                                                                onclick="confirmCancelReservation(this)">
+                                                            Cancelar
+                                                        </button>
+                                                    </form>
+                                                }
                                             }
                                         </div>
                                     </td>

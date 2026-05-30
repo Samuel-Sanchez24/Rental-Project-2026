@@ -1,0 +1,108 @@
+@model Rental_Project_2026.Application.UseCases.Payments.Queries.GetPaymentById.PaymentDetailDTO
+@using Rental_Project_2026.Domain.Enums
+
+@{
+    ViewData["Title"] = "Resultado del pago";
+}
+
+<link rel="stylesheet" href="~/css/theme-dark.css" />
+
+<div class="pagetitle">
+    <h1>Resultado del pago</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-controller="Home" asp-action="Index">Inicio</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a asp-controller="Reservations" asp-action="Index">Mis reservas</a>
+            </li>
+            <li class="breadcrumb-item active">Pago</li>
+        </ol>
+    </nav>
+</div>
+
+<section class="section">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Estado del pago</h5>
+
+            @switch (Model.Status)
+            {
+                case PaymentStatus.Paid:
+                    <div class="alert alert-success">
+                        El pago fue aprobado y la reserva quedó confirmada.
+                    </div>
+                    break;
+
+                case PaymentStatus.Failed:
+                    <div class="alert alert-danger">
+                        El pago fue rechazado. Puedes volver a intentarlo desde el detalle de la reserva.
+                    </div>
+                    break;
+
+                case PaymentStatus.Cancelled:
+                    <div class="alert alert-secondary">
+                        El pago fue cancelado.
+                    </div>
+                    break;
+
+                default:
+                    <div class="alert alert-warning">
+                        El pago sigue pendiente de confirmación.
+                    </div>
+                    break;
+            }
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <strong>Reserva</strong>
+                    <p>@Model.ReservationId</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <strong>Referencia proveedor</strong>
+                    <p>@Model.ProviderReference</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <strong>Proveedor</strong>
+                    <p>@Model.Provider</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <strong>Valor</strong>
+                    <p>@Model.Amount.ToString("C0")</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <strong>Creado</strong>
+                    <p>@Model.CreatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <strong>Actualizado</strong>
+                    <p>@Model.UpdatedAt.ToString("dd/MM/yyyy HH:mm")</p>
+                </div>
+
+                @if (Model.PaidAt.HasValue)
+                {
+                    <div class="col-md-6 mb-3">
+                        <strong>Pagado</strong>
+                        <p>@Model.PaidAt.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                }
+            </div>
+
+            <div class="d-flex justify-content-end gap-2">
+                <a asp-controller="Reservations" asp-action="Details" asp-route-id="@Model.ReservationId" class="btn btn-primary">
+                    Volver al detalle
+                </a>
+
+                <a asp-controller="Reservations" asp-action="Index" class="btn btn-outline-secondary">
+                    Ir a Mis reservas
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
