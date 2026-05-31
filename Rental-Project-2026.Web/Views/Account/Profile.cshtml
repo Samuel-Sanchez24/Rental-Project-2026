@@ -15,93 +15,68 @@
             <li class="breadcrumb-item">
                 <a asp-action="Index" asp-controller="Home">Inicio</a>
             </li>
-            <li class="breadcrumb-item active">
-                @ViewData["Title"]
-            </li>
+            <li class="breadcrumb-item active">@ViewData["Title"]</li>
         </ol>
     </nav>
 </div>
 
 <section class="section dashboard">
-
     <div class="card">
-
-        <div class="card-header">
-            <div class="row align-items-center">
-                <h3 class="m-0 font-weight-bold text-primary col-md-10">
-                    @ViewData["Title"]
-                </h3>
-
-                <div class="col-md-2 text-end">
-                    <a asp-action="ChangePassword" class="btn btn-outline-primary">
-                        <i class="bi bi-key-fill"></i> Contraseña
-                    </a>
-                </div>
-            </div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="m-0 font-weight-bold text-primary">@ViewData["Title"]</h3>
+            <a asp-action="ChangePassword" class="btn btn-outline-primary">Cambiar contraseña</a>
         </div>
 
         <div class="card-body mt-3">
-
-            <form asp-action="Profile" method="POST">
-
-                <div class="row">
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="FirstName" class="form-label"></label>
-                        <input asp-for="FirstName" class="form-control" />
+            <form asp-action="Profile" method="POST" class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="FirstName" class="form-control" placeholder="Nombre" />
+                        <label asp-for="FirstName"></label>
                         <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="LastName" class="form-label"></label>
-                        <input asp-for="LastName" class="form-control" />
-                        <span asp-validation-for="LastName" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Email" class="form-label"></label>
-                        <input asp-for="Email"
-                               class="form-control bg-secondary-subtle"
-                               readonly />
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="RoleName" class="form-label"></label>
-                        <input asp-for="RoleName"
-                               class="form-control bg-secondary-subtle"
-                               readonly />
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="PhoneNumber" class="form-label"></label>
-                        <input asp-for="PhoneNumber" class="form-control" />
-                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                    </div>
-
                 </div>
 
-                <div class="text-center mt-4">
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="LastName" class="form-control" placeholder="Apellido" />
+                        <label asp-for="LastName"></label>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
 
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle-fill"></i> Guardar
-                    </button>
+                
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="Email" class="form-control" placeholder="Correo" readonly />
+                        <label asp-for="Email"></label>
+                    </div>
+                </div>
 
-                    <a asp-action="Index"
-                       asp-controller="Home"
-                       class="btn btn-secondary">
-                        <i class="bi bi-arrow-left-circle"></i> Volver
-                    </a>
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="RoleName" class="form-control" placeholder="Rol" readonly />
+                        <label asp-for="RoleName"></label>
+                    </div>
+                </div>
 
+                <div class="col-md-6">
+                    <div class="form-floating">
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Teléfono" />
+                        <label asp-for="PhoneNumber"></label>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
                 </div>
 
             </form>
-
         </div>
-
     </div>
-
 </section>
-
+    
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

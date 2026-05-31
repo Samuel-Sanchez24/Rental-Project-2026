@@ -9,5 +9,6 @@ namespace Rental_Project_2026.Application.UseCases.Roles.Commands.UpdateRole
         public required Guid Id { get; init; }
         public required string Name { get; init; }
         public List<Guid> PermissionIds { get; init; } = [];
+        public List<Guid> BranchesIds { get; init; } = [];
     }
 }

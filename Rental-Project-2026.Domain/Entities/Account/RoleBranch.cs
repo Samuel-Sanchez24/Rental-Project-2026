@@ -1,35 +1,30 @@
 ﻿using Rental_Project_2026.Domain.Entities.Branches;
 using Rental_Project_2026.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using static Rental_Project_2026.Domain.Entities.Account.Role;
-using static System.Collections.Specialized.BitVector32;
 
 namespace Rental_Project_2026.Domain.Entities.Account
 {
     public class RoleBranch
     {
         public Guid RoleId { get; private set; }
-        public Guid PermissionId { get; private set; }
-        public Role Role { get; set; }
-        public Permission Permission { get; set; }
+        public Guid BranchId { get; private set; }
+        public Role Role { get; set; } 
+        public Branch Branch { get; set; }
 
         private RoleBranch() { }
 
-        public RoleBranch(Guid roleId, Guid permissionId)
+        public RoleBranch(Guid roleId, Guid branchId)
         {
             if (roleId == Guid.Empty)
             {
                 throw new BusinessRulesException("El RoleId no puede ser vacío.");
             }
-            if (permissionId == Guid.Empty)
+            if (branchId == Guid.Empty)
             {
-                throw new BusinessRulesException("El PermissionId no puede ser vacío.");
+                throw new BusinessRulesException("El id de la sucursal no puede estar vacío.");
             }
 
             RoleId = roleId;
-            PermissionId = permissionId;
+            BranchId = branchId;
         }
     }
 }

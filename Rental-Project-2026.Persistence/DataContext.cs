@@ -23,6 +23,7 @@ namespace Rental_Project_2026.Persistence
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<RoleBranch> RoleBranches { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,6 +47,7 @@ namespace Rental_Project_2026.Persistence
             modelBuilder.Entity<Payment>()
                 .Property(p => p.Amount)
                 .HasPrecision(18, 2);
+
         }
     }
 }

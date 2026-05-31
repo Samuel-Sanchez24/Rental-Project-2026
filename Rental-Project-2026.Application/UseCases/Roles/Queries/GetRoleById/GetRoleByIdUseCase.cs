@@ -29,6 +29,8 @@ namespace Rental_Project_2026.Application.UseCases.Roles.Queries.GetRoleById
                 Id = role.Id,
                 Name = role.Name,
                 PermissionIds = role.RolePermissions.Select(rp => rp.PermissionId).ToList(),
+
+                BranchesIds = role.RoleBranches.Select(rs => rs.BranchId).ToList(),
             };
         }
     }

@@ -6,6 +6,9 @@ using Rental_Project_2026.Persistence.Entities;
 using Microsoft.EntityFrameworkCore;
 using Rental_Project_2026.Application.UseCases.Account.Queries.GetProfile;
 using Rental_Project_2026.Domain.Exceptions;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetAccessibleBranches;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetVehiclesByBranch;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetVehicleById;
 
 namespace Rental_Project_2026.Persistence.Repositories
 {
@@ -37,6 +40,21 @@ namespace Rental_Project_2026.Persistence.Repositories
             {
                 throw new BusinessRulesException(string.Join("; ", result.Errors.Select(e => e.Description)));
             }
+        }
+
+        public Task<IReadOnlyList<AccessibleBranchItemDTO>> GetAccessibleBranchesAsync(string userId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AccessibleBranchVehiclesDTO> GetAccessibleVehicleByBranchAsync(string userId, Guid branchId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<AccessibleVehicleDatailDTO> GetAccessibleVehicleByIdAsync(string userId, Guid vehicleId, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<AccountProfileDTO> GetProfileAsync(string userId, CancellationToken cancellationToken = default)

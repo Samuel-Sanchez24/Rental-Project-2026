@@ -54,22 +54,21 @@ namespace Rental_Project_2026.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "User",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    EmailConfirmed = table.Column<bool>(type: "bit", maxLength: 255, nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(12)", maxLength: 12, nullable: false),
-                    Role = table.Column<int>(type: "int", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
+                    FisrtName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_User", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,8 +102,8 @@ namespace Rental_Project_2026.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Firtsname = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
-                    Lastname = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -130,6 +129,30 @@ namespace Rental_Project_2026.Persistence.Migrations
                         principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RoleBranches",
+                columns: table => new
+                {
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RoleBranches", x => new { x.RoleId, x.BranchId });
+                    table.ForeignKey(
+                        name: "FK_RoleBranches_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RoleBranches_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -217,6 +240,80 @@ namespace Rental_Project_2026.Persistence.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Reservations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReturnDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Days = table.Column<int>(type: "int", nullable: false),
+                    DailyPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CustomerFullName = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    DocumentNumber = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DriverLicenseCategories = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    DriverLicenseExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RequiresSpecialAssistance = table.Column<bool>(type: "bit", nullable: false),
+                    AssistanceNotes = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
+                    VehicleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BranchId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reservations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reservations_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Branches_BranchId",
+                        column: x => x.BranchId,
+                        principalTable: "Branches",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Reservations_Vehicles_VehicleId",
+                        column: x => x.VehicleId,
+                        principalTable: "Vehicles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ReservationId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", precision: 18, scale: 2, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Provider = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    ProviderReference = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: true),
+                    PaymentUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaidAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_Reservations_ReservationId",
+                        column: x => x.ReservationId,
+                        principalTable: "Reservations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
                 table: "AspNetUserClaims",
@@ -245,10 +342,35 @@ namespace Rental_Project_2026.Persistence.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Payments_ReservationId",
+                table: "Payments",
+                column: "ReservationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Permissions_Code",
                 table: "Permissions",
                 column: "Code",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_BranchId",
+                table: "Reservations",
+                column: "BranchId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_UserId",
+                table: "Reservations",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reservations_VehicleId",
+                table: "Reservations",
+                column: "VehicleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RoleBranches_BranchId",
+                table: "RoleBranches",
+                column: "BranchId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RolePermissions_PermissionId",
@@ -259,12 +381,6 @@ namespace Rental_Project_2026.Persistence.Migrations
                 name: "IX_Roles_Name",
                 table: "Roles",
                 column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_Email",
-                table: "Users",
-                column: "Email",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -292,25 +408,34 @@ namespace Rental_Project_2026.Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Payments");
+
+            migrationBuilder.DropTable(
+                name: "RoleBranches");
+
+            migrationBuilder.DropTable(
                 name: "RolePermissions");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "User");
 
             migrationBuilder.DropTable(
-                name: "Vehicles");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "Permissions");
 
             migrationBuilder.DropTable(
-                name: "Branches");
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Vehicles");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Branches");
         }
     }
 }

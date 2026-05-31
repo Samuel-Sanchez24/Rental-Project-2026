@@ -28,7 +28,7 @@ namespace Rental_Project_2026.Application.UseCases.Roles.Commands.UpdateRole
             }
 
             role.UpdateName(command.Name);
-            await _rolesRepository.UpdateAsync(role, command.PermissionIds);
+            await _rolesRepository.UpdateAsync(role, command.PermissionIds, command.BranchesIds);
         }
     }
 }

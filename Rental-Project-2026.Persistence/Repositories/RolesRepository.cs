@@ -141,5 +141,15 @@ namespace Rental_Project_2026.Persistence.Repositories
                 .ThenBy(p => p.Description)
                 .ToListAsync(cancellationToken);
         }
+
+        public Task CreateAsync(Role role, List<Guid> permissionIds, List<Guid> branchIds, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Role role, List<Guid> permissionIds, List<Guid> branchIds, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

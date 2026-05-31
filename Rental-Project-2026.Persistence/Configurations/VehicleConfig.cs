@@ -8,9 +8,11 @@ namespace Rental_Project_2026.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Vehicle> builder)
         {
+            builder.HasKey(v => v.Id);
+
             builder.Property(v => v.Plate)
-       .HasMaxLength(10)
-       .IsRequired();
+                   .HasMaxLength(10)
+                   .IsRequired();
 
             builder.HasIndex(v => v.Plate)
                    .IsUnique();
@@ -44,7 +46,7 @@ namespace Rental_Project_2026.Persistence.Configurations
                    .IsRequired();
 
             builder.HasOne(v => v.Branch)
-                   .WithMany()
+                   .WithMany(b => b.Vehicles)
                    .HasForeignKey(v => v.BranchId)
                    .OnDelete(DeleteBehavior.Restrict);
         }
