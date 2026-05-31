@@ -8,5 +8,6 @@ namespace Rental_Project_2026.Application.UseCases.Roles.Commands.CreateRol
     {
         public required string Name { get; init; }
         public List<Guid> PermissionIds { get; init; } = [];
+        public List<Guid> BranchesIds { get; init; } = [];
     }
 }

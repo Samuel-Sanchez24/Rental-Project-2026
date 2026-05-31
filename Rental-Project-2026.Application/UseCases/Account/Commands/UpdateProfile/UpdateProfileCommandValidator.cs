@@ -21,7 +21,7 @@ namespace Rental_Project_2026.Application.UseCases.Account.Commands.UpdateProfil
                 .MaximumLength(64).WithMessage("El apellido no puede exceder 64 caracteres.");
 
             RuleFor(x => x.PhoneNumber)
-                .MaximumLength(32).WithMessage("El teléfono no puede exceder 32 caracteres.");
+                .MaximumLength(15).WithMessage("El teléfono no puede exceder 15 caracteres.");
         }
     }
 }

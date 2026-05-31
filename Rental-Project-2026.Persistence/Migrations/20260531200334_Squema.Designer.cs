@@ -12,8 +12,8 @@ using Rental_Project_2026.Persistence;
 namespace Rental_Project_2026.Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20260528021805_ChangeDriverLicenseNumberToCategories")]
-    partial class ChangeDriverLicenseNumberToCategories
+    [Migration("20260531200334_Squema")]
+    partial class Squema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,7 +123,7 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("User", (string)null);
                 });
 
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.Permission", b =>
@@ -172,6 +172,21 @@ namespace Rental_Project_2026.Persistence.Migrations
                         .IsUnique();
 
                     b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.RoleBranch", b =>
+                {
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RoleId", "BranchId");
+
+                    b.HasIndex("BranchId");
+
+                    b.ToTable("RoleBranches");
                 });
 
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.RolePermission", b =>
@@ -223,6 +238,51 @@ namespace Rental_Project_2026.Persistence.Migrations
                     b.ToTable("Branches");
                 });
 
+            modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Provider")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("ProviderReference")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
+
+                    b.Property<Guid>("ReservationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReservationId");
+
+                    b.ToTable("Payments", (string)null);
+                });
+
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Reservation", b =>
                 {
                     b.Property<Guid>("Id")
@@ -230,7 +290,8 @@ namespace Rental_Project_2026.Persistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AssistanceNotes")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
@@ -243,7 +304,8 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.Property<string>("CustomerFullName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.Property<decimal>("DailyPrice")
                         .HasPrecision(18, 2)
@@ -254,22 +316,26 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.Property<string>("DocumentNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<string>("DriverLicenseCategories")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime>("DriverLicenseExpirationDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime>("RentDate")
                         .HasColumnType("datetime2");
@@ -289,6 +355,7 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
+                        .HasMaxLength(450)
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("VehicleId")
@@ -465,6 +532,25 @@ namespace Rental_Project_2026.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.RoleBranch", b =>
+                {
+                    b.HasOne("Rental_Project_2026.Domain.Entities.Branches.Branch", "Branch")
+                        .WithMany("RoleBranches")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rental_Project_2026.Domain.Entities.Account.Role", "Role")
+                        .WithMany("RoleBranches")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.RolePermission", b =>
                 {
                     b.HasOne("Rental_Project_2026.Domain.Entities.Account.Permission", "Permission")
@@ -484,6 +570,17 @@ namespace Rental_Project_2026.Persistence.Migrations
                     b.Navigation("Role");
                 });
 
+            modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Payment", b =>
+                {
+                    b.HasOne("Rental_Project_2026.Domain.Entities.Reservation", "Reservation")
+                        .WithMany()
+                        .HasForeignKey("ReservationId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Reservation");
+                });
+
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Reservation", b =>
                 {
                     b.HasOne("Rental_Project_2026.Domain.Entities.Branches.Branch", "Branch")
@@ -492,7 +589,7 @@ namespace Rental_Project_2026.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Rental_Project_2026.Domain.Account.User", "User")
+                    b.HasOne("Rental_Project_2026.Persistence.Entities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -506,15 +603,13 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.Navigation("Branch");
 
-                    b.Navigation("User");
-
                     b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Vehicle", b =>
                 {
                     b.HasOne("Rental_Project_2026.Domain.Entities.Branches.Branch", "Branch")
-                        .WithMany()
+                        .WithMany("Vehicles")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -540,7 +635,16 @@ namespace Rental_Project_2026.Persistence.Migrations
 
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.Role", b =>
                 {
+                    b.Navigation("RoleBranches");
+
                     b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Branches.Branch", b =>
+                {
+                    b.Navigation("RoleBranches");
+
+                    b.Navigation("Vehicles");
                 });
 #pragma warning restore 612, 618
         }

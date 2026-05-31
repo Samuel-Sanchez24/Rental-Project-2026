@@ -1,8 +1,4 @@
 ﻿using Rental_Project_2026.Application.Contracts.Repositories;
-using Rental_Project_2026.Application.Utilities.Mediator;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Rental_Project_2026.Application.UseCases.Account.Queries.GetProfile
 {

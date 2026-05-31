@@ -22,7 +22,7 @@ namespace Rental_Project_2026.Application.UseCases.Roles.Commands.CreateRol
 
             Role role = new Role(command.Name);
 
-            await _rolesRepository.CreateAsync(role, command.PermissionIds);
+            await _rolesRepository.CreateAsync(role, command.PermissionIds, command.BranchesIds);
 
             return role.Id;
         }

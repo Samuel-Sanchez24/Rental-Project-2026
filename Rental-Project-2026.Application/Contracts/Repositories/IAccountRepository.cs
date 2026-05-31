@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Rental_Project_2026.Application.UseCases.Account.Commands.Login;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetAccessibleBranches;
 using Rental_Project_2026.Application.UseCases.Account.Queries.GetAccountUserInfo;
 using Rental_Project_2026.Application.UseCases.Account.Queries.GetProfile;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetVehicleById;
+using Rental_Project_2026.Application.UseCases.Account.Queries.GetVehiclesByBranch;
 
 namespace Rental_Project_2026.Application.Contracts.Repositories
 {
@@ -23,7 +26,10 @@ namespace Rental_Project_2026.Application.Contracts.Repositories
 
         Task ChangePasswordAsync(string userId, string currentPassword, string newPassword, CancellationToken cancellationToken = default);
 
+        Task<IReadOnlyList<AccessibleBranchItemDTO>> GetAccessibleBranchesAsync(string userId, CancellationToken cancellationToken = default);
 
+        Task<AccessibleBranchVehiclesDTO> GetAccessibleVehicleByBranchAsync(string userId, Guid branchId, CancellationToken cancellationToken = default);
 
+        Task<AccessibleVehicleDatailDTO> GetAccessibleVehicleByIdAsync(string userId, Guid vehicleId, CancellationToken cancellationToken = default);
     }
 }

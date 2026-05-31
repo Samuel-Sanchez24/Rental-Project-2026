@@ -171,6 +171,21 @@ namespace Rental_Project_2026.Persistence.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.RoleBranch", b =>
+                {
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BranchId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("RoleId", "BranchId");
+
+                    b.HasIndex("BranchId");
+
+                    b.ToTable("RoleBranches");
+                });
+
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.RolePermission", b =>
                 {
                     b.Property<Guid>("RoleId")
@@ -262,7 +277,7 @@ namespace Rental_Project_2026.Persistence.Migrations
 
                     b.HasIndex("ReservationId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Reservation", b =>
@@ -514,6 +529,25 @@ namespace Rental_Project_2026.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.RoleBranch", b =>
+                {
+                    b.HasOne("Rental_Project_2026.Domain.Entities.Branches.Branch", "Branch")
+                        .WithMany("RoleBranches")
+                        .HasForeignKey("BranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Rental_Project_2026.Domain.Entities.Account.Role", "Role")
+                        .WithMany("RoleBranches")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Branch");
+
+                    b.Navigation("Role");
+                });
+
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.RolePermission", b =>
                 {
                     b.HasOne("Rental_Project_2026.Domain.Entities.Account.Permission", "Permission")
@@ -572,7 +606,7 @@ namespace Rental_Project_2026.Persistence.Migrations
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Vehicle", b =>
                 {
                     b.HasOne("Rental_Project_2026.Domain.Entities.Branches.Branch", "Branch")
-                        .WithMany()
+                        .WithMany("Vehicles")
                         .HasForeignKey("BranchId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -598,7 +632,16 @@ namespace Rental_Project_2026.Persistence.Migrations
 
             modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Account.Role", b =>
                 {
+                    b.Navigation("RoleBranches");
+
                     b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("Rental_Project_2026.Domain.Entities.Branches.Branch", b =>
+                {
+                    b.Navigation("RoleBranches");
+
+                    b.Navigation("Vehicles");
                 });
 #pragma warning restore 612, 618
         }
