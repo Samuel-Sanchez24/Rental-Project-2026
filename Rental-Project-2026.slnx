@@ -7,6 +7,7 @@
     <Project Path="Rental-Project-2026.Persistence/Rental-Project-2026.Persistence.csproj" />
   </Folder>
   <Folder Name="/Presenters/">
+    <Project Path="Rental-Project-2026.Api/Rental-Project-2026.Api.csproj" Id="97cf6a08-6c4e-4950-8a1a-38120dd922bc" />
     <Project Path="Rental-Project-2026.Web/Rental-Project-2026.Web.csproj" />
   </Folder>
   <Folder Name="/Tests/">

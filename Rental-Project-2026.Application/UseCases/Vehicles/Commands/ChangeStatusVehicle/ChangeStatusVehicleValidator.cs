@@ -1,7 +1,11 @@
-﻿using FluentValidation;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
+using FluentValidation;
+using Rental_Project_2026.Domain.Entities;
+using Rental_Project_2026.Domain.Enums;
+using Rental_Project_2026.Domain.Exceptions;
 
 namespace Rental_Project_2026.Application.UseCases.Vehicles.Commands.ChangeStatusVehicle
 {
